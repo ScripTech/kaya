@@ -11,21 +11,4 @@
 |
 */
 
-Route::get('/', function () {
-    return view('rooms');
-});
-
-Route::get('/room/id', function () {
-    return view('room');
-});
-
-
-Route::get('/perfil', function () {
-    return view('perfil');
-});
-
-Route::get('/editar/perfil', function () {
-    return view('welcome');
-});
-
-
+Route::get('/{any}', 'SinglePageController@index')->where('any', '.*');

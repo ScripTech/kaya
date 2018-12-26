@@ -3,8 +3,9 @@
 namespace App\Providers;
 
 use Laravel\Passport\Passport;
+use Illuminate\Support\ServiceProvider;
+use Illuminate\Http\Resources\Json\Resource;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Schema; //Import Schema
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,9 +23,9 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         Schema::defaultStringLength(191);
-
-        $this->registerPolicies();
-
+         // Removing data object o responses
+        Resource::withoutWrapping();
+        // For Passport Routes
         Passport::routes();
     }
 
