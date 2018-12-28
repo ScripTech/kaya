@@ -185,13 +185,13 @@ export default {
         picked: null,
         //provinvias
         provincias: [],
-        provs_endpoint: 'http://localhost:3523/api/kaya/data/provincias/',
+        provs_endpoint: '/api/kaya/data/provincias/',
         // Data Distritos
         distritos: [],
-        distritosEndpoint: 'http://localhost:3523/api/kaya/data/distritos/',
+        distritosEndpoint: '/api/kaya/data/distritos/',
         // Universidades
         universidades:[],
-        universidadesEndpoint: 'http://localhost:3523/api/kaya/data/universidades/',
+        universidadesEndpoint: '/api/kaya/data/universidades/',
         //
         errors: [],
         id_prov: null,
@@ -261,7 +261,7 @@ export default {
                 this.errors.push('Universidade required.');
             }
             if (!this.errors.length) {
-                axios.post('http://localhost:3523/api/kaya/data/universidades', {
+                axios.post('/api/kaya/data/universidades', {
                         nome_facul: this.nome_facul,
                         provincia_id: this.prov_id,
                         distrito_id: this.distrito_id

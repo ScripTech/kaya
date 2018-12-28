@@ -35,10 +35,10 @@
             <!-- Multi step form -->
             <div class="col-md-12 m-auto">
               <form action="#" >
-                <div class="row m-0 step-1">
+                <div class="row m-0 step-1" style="display:none">
                   <div class="m-4 col-md-6 p-3" style="max-width: 500px;">
-                    <h4 class="_text-bc">Where’s your place located?</h4>
-                      <p class="text-muted"> will only get your exact address once they’ve booked a reservation.</p>
+                    <h4 class="_text-bc">Onde o seu apartamento esta localizado?</h4>
+                      <p class="text-muted"> Para começar vamos indicar onde o seu apartamento esta localizado..</p>
                     <div class="_from">
                       <div>
                         <div class="f-title mb-2" style="font-weight:500; text-transform:upercase">Pais</div>
@@ -103,8 +103,91 @@
                     </div>
                   </div>
                 </div>
-                <div class="step-2" style="display:none">
-                    a
+                <div class="step-2 " style="display:block">
+                  <div class="m-4 col-md-6 p-3" style="max-width: 500px;">
+                    <h4 class="_text-bc">Tipo de apartamento</h4>
+                    <p class="text-muted">Indique o tipo de casa na qual os estudantes serão hospedes.</p>
+                    <div class="mt-4 border-top selection_from">
+                      <div class="sl-op m-2 mb-3 p-1 custom-control custom-radio">
+                        <input type="radio"  class="custom-control-input" name="hostType" id="typeRoom1" value="repo" v-model="hostType">
+                        <label class="f-title custom-control-label" for="typeRoom1">República</label>
+                        <div class="sb-c-l text-muted">
+                          Republicas são apartamento (geralmente uma casa) com dois ou mais quartos compartilháveis.
+                        </div>
+                      </div>
+
+                      <div class="sl-op m-2 mb-3 p-1 custom-control custom-radio">
+                        <input type="radio"  class="custom-control-input" name="hostType" id="typeRoom2" value="condo" v-model="hostType">
+                        <label class="f-title custom-control-label" for="typeRoom2">Condómino (para estudantes)</label>
+                        <div class="sb-c-l text-muted">
+                          Uma rede de quartos construídos especificamente para hospedar estudantes.
+                        </div>
+                      </div>
+
+                      <div class="sl-op m-2 mb-3 p-1 custom-control custom-radio">
+                        <input  class="custom-control-input" type="radio" name="hostType" id="typeRoom3" value="room" v-model="hostType">
+                        <label class="f-title text-muted custom-control-label" for="typeRoom3">Um Quarto (para estudantes)</label>
+                        <div class="sb-c-l text-muted">
+                          Estou recebendo hospedes para um quarto. (quarto fora da casa principal ou quarto privado).
+                        </div>
+                      </div>
+
+                    </div>
+                  <transition name="expand" mode="in-out">
+                    <div v-if="hostType" class="mt-4 p-3 card border-0 ms-shadow">
+                      <h4 class="_text-bc ">Condições do imóvel</h4>
+                      <p class="text-muted">Indique o tipo de casa na qual os estudantes serão hospedes (rever texto).</p>
+                      <div class="pt-3 border-top selection_from">
+                        <div>
+                          <div class="row bt-2 pl-3 pr-3">
+                            <div class="bt-label m-shadow bg-orange-label">Energia</div>
+                          </div>
+                          <div class="selection_options pl-4">
+                            <div class="sl-op m-2 mb-3 p-1 custom-control custom-radio">
+                              <input type="radio"  class="custom-control-input" name="typeContador" id="typeContador1" value="condo">
+                              <label class="f-title custom-control-label" for="typeContador1">Contador Particular</label>
+                              <div class="sb-c-l text-muted">
+                                No contador particular, a gestão de compra e consumo de energia é com o hospede da casa.
+                              </div>
+                            </div>
+
+                            <div class="sl-op m-2 mb-3 p-1 custom-control custom-radio">
+                              <input type="radio"  class="custom-control-input" name="typeContador" id="typeContador2" value="condo">
+                              <label class="f-title custom-control-label" for="typeContador2">Contador Compartilhado</label>
+                              <div class="sb-c-l text-muted">
+                                O contador é único (ou do condomínio), e gestão do consumo é com os hospedes do condomínio.
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                          <div>
+                          <div class="row bt-2 pl-3 pr-3">
+                            <div class="bt-label m-shadow bg-red-label" style="float-right">Água</div>
+                          </div>
+                          <div class="selection_options pl-4" style="margin-top:35px;">
+                            <div class="sl-op m-2 mb-3 p-1 custom-control custom-radio">
+                              <input type="radio"  class="custom-control-input" name="aguaOption" id="aguaOption1" value="condo">
+                              <label class="f-title custom-control-label" for="aguaOption1">No quintal</label>
+                              <div class="sb-c-l text-muted">
+                                No contador particular, a gestão de compra e consumo de energia é com o hospede da casa.
+                              </div>
+                            </div>
+
+                            <div class="sl-op m-2 mb-3 p-1 custom-control custom-radio">
+                              <input type="radio"  class="custom-control-input" name="aguaOption" id="aguaOption2" value="condo">
+                              <label class="f-title custom-control-label" for="aguaOption2">Fácil Acesso</label>
+                              <div class="sb-c-l text-muted">
+                                O contador é único (ou do condomínio), e gestão do consumo é com os hospedes do condomínio.
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </transition>
+                  </div>
                 </div>
                 <div class="step-3" style="display:none">
                   a
@@ -124,6 +207,31 @@
 </template>
 
 <style scoped>
+  .bt-label{
+    border-radius: .35rem!important;
+    display: inline-block;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 40px;
+    min-width: 140px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    font-family: -apple-system, BlinkMacSystemFont, 'Roboto', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
+  }
+
+  .bg-orange-label{
+    background-color: #FCB036;
+    color: white;
+  }
+
+  .bg-red-label{
+    right: 25;
+    position: absolute;
+    background: #CE3737;
+    color: white;
+  }
+
 html,body,.main_container {
     height:100%;
     }
@@ -144,6 +252,14 @@ html,body,.main_container {
     .m-row .no-float {
       display: table-cell;
       float: none;
+    }
+
+    .sl-op label{
+      margin: 0px !important;
+      font-weight: 500;
+    }
+    .sb-c-l{
+      font-size: 15px;
     }
 </style>
 
@@ -183,8 +299,12 @@ export default {
         },
         data() {
             return {
+              // Variaveis
+              addFade:'my-fade',
+              hostType: null,
+              //EndPoints
               provincias: [],
-              provs_endpoint: 'http://localhost:3523/api/kaya/data/provincias/'
+              provs_endpoint: '/api/kaya/data/provincias/'
             }
           }
     }
