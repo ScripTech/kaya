@@ -36,7 +36,8 @@
                             <div class="f-title mb-2" style="font-weight:500; text-transform:upercase">Distrito</div>
                             <div>
                                 <select v-model="distrito_id" name="distrito_id" id="" class="custom-select d-block w-100 ng-binding" style="height: calc(2.75rem + 2px) !important;">
-                                <option :p_id="distrito.provincia_id" :value="distrito.id" v-if="distritos" v-for="distrito in distritos" :key="distrito.id">{{distrito.nome}}</option>
+                                    <option :value="null">Distritos</option>
+                                    <option :p_id="distrito.provincia_id" :value="distrito.id" v-for="distrito in distritos" :key="distrito.id">{{distrito.nome}}</option>
                                 </select>
                             </div>
                         </div>
@@ -100,6 +101,7 @@
                             <div class="f-title mb-2" style="font-weight:500; text-transform:upercase">Provincia</div>
                             <div>
                                 <select v-model="provincia_id" name="provincia_id" id="" class="custom-select d-block w-100 ng-binding" style="height: calc(2.75rem + 2px) !important;">
+                                    <option :value="null">Províncias</option>
                                     <option :value=provincia.id v-for="provincia in provincias" :key="provincia.id">{{ provincia.nome }}</option>
                                 </select>
                             </div>

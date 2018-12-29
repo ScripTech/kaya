@@ -52,9 +52,8 @@
                         <div class="col-6 pl-0">
                           <div class="f-title mb-2" style="font-weight:500; text-transform:upercase">Provincia</div>
                           <div>
-                            <select name="prov" id="" class="custom-select d-block w-100 ng-binding" style="height: calc(2.75rem + 2px) !important;"  >
-
-                              <option value="">Províncias</option>
+                            <select v-model="provincia_id" name="prov" id="" class="custom-select d-block w-100 ng-binding" style="height: calc(2.75rem + 2px) !important;"  >
+                              <option :value="null">Províncias...</option>
                               <option :value=provincia.id v-for="provincia in provincias" :key="provincia.id">{{ provincia.nome }}</option>
                             </select>
                           </div>
@@ -62,8 +61,9 @@
                         </div>
                         <div class="col-6 pl-0 pr-0">
                           <div class="f-title mb-2" style="font-weight:500; text-transform:upercase">Distrito</div>
-                          <select  name="destrito" id="" class="custom-select d-block w-100 ng-binding" style="height: calc(2.75rem + 2px) !important;">
-                            <option value="Maputo">Kambukuana</option>
+                          <select  v-model="distrito_id" name="distrito_id" id="" class="custom-select d-block w-100 ng-binding" style="height: calc(2.75rem + 2px) !important;">
+                            <option :value="null">Distritos...</option>
+                            <option :p_id="distrito.provincia_id" :value="distrito.id" v-for="distrito in distritos" :key="distrito.id">{{distrito.nome}}</option>
                           </select>
                         </div>
                       </div>
@@ -71,11 +71,13 @@
                         <div class="col-12 mt-4 p-0">
                           <div class="f-title text-muted mb-2" style="font-weight:500; text-transform:upercase">Selecione as faculdades</div>
                           <p class="text-muted"> will only get your exact address once they’ve booked a reservation.</p>
-                          <div class="border p-2 bg-white rounded" style="min-height:230px;">
+                          <div class="ms-shadow p-2 bg-white rounded" style="min-height:230px;">
 
-                              <div class="rounded p-1">
-                                  <input type="checkbox" id="jack" value="Jack">
-                                  <label for="jack">UEM-ESNEC</label>
+                              <div class="row m-0" v-for="universidade in universidades" :key="universidade.id" >
+                                <div class="custom-control custom-radio sel-l-opt" >
+                                  <input class="custom-control-input" type="checkbox" :id="universidade.id" :value="universidade.id">
+                                  <label class="custom-control-label my-custom-label" :for="universidade.id">{{universidade.nome}}</label>
+                                </div>
                               </div>
                           </div>
                         </div>
@@ -86,24 +88,8 @@
                       </div>
                     </div>
                   </div>
-
-                  <div class="m-4 col-md-6 p-3" style="max-width: 500px; display:none">
-                    <h4 class="_text-c">Where’s your place located?</h4>
-                      <p> will only get your exact address once they’ve booked a reservation.</p>
-                    <div class="_from">
-                      <div>
-                        <div style="font-weight:500; text-transform:upercase">Pais</div>
-                          <div>
-                            <select name="pais" id="" class="form-control">
-                              <option value="Moz">Moz</option>
-                            </select>
-                          </div>
-
-                      </div>
-                    </div>
-                  </div>
                 </div>
-                <div class="step-2 " style="display:block">
+                <div class="step-2 " style="display:none">
                   <div class="m-4 col-md-6 p-3" style="max-width: 500px;">
                     <h4 class="_text-bc">Tipo de apartamento</h4>
                     <p class="text-muted">Indique o tipo de casa na qual os estudantes serão hospedes.</p>
@@ -133,64 +119,96 @@
                       </div>
 
                     </div>
-                  <transition name="expand" mode="in-out">
-                    <div v-if="hostType" class="mt-4 p-3 card border-0 ms-shadow">
-                      <h4 class="_text-bc ">Condições do imóvel</h4>
-                      <p class="text-muted">Indique o tipo de casa na qual os estudantes serão hospedes (rever texto).</p>
-                      <div class="pt-3 border-top selection_from">
-                        <div>
-                          <div class="row bt-2 pl-3 pr-3">
-                            <div class="bt-label m-shadow bg-orange-label">Energia</div>
-                          </div>
-                          <div class="selection_options pl-4">
-                            <div class="sl-op m-2 mb-3 p-1 custom-control custom-radio">
-                              <input type="radio"  class="custom-control-input" name="typeContador" id="typeContador1" value="condo">
-                              <label class="f-title custom-control-label" for="typeContador1">Contador Particular</label>
-                              <div class="sb-c-l text-muted">
-                                No contador particular, a gestão de compra e consumo de energia é com o hospede da casa.
-                              </div>
-                            </div>
-
-                            <div class="sl-op m-2 mb-3 p-1 custom-control custom-radio">
-                              <input type="radio"  class="custom-control-input" name="typeContador" id="typeContador2" value="condo">
-                              <label class="f-title custom-control-label" for="typeContador2">Contador Compartilhado</label>
-                              <div class="sb-c-l text-muted">
-                                O contador é único (ou do condomínio), e gestão do consumo é com os hospedes do condomínio.
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
+                    <div v-if="hostType" mode="in-out">
+                      <div transation="expand" class="mt-4 p-3 card border-0 ms-shadow">
+                        <h4 class="_text-bc ">Condições do imóvel</h4>
+                        <p class="text-muted">Indique o tipo de casa na qual os estudantes serão hospedes (rever texto).</p>
+                        <div class="pt-3 border-top selection_from">
                           <div>
-                          <div class="row bt-2 pl-3 pr-3">
-                            <div class="bt-label m-shadow bg-red-label" style="float-right">Água</div>
-                          </div>
-                          <div class="selection_options pl-4" style="margin-top:35px;">
-                            <div class="sl-op m-2 mb-3 p-1 custom-control custom-radio">
-                              <input type="radio"  class="custom-control-input" name="aguaOption" id="aguaOption1" value="condo">
-                              <label class="f-title custom-control-label" for="aguaOption1">No quintal</label>
-                              <div class="sb-c-l text-muted">
-                                No contador particular, a gestão de compra e consumo de energia é com o hospede da casa.
+                            <div class="row bt-2 pl-3 pr-3">
+                              <div class="bt-label m-shadow bg-orange-label">Energia</div>
+                            </div>
+                            <div class="selection_options pl-4">
+                              <div class="sl-op m-2 mb-3 p-1 custom-control custom-radio">
+                                <input type="radio"  class="custom-control-input" name="typeContador" id="typeContador1" value="condo">
+                                <label class="f-title custom-control-label" for="typeContador1">Contador Particular</label>
+                                <div class="sb-c-l text-muted">
+                                  No contador particular, a gestão de compra e consumo de energia é com o hospede da casa.
+                                </div>
+                              </div>
+
+                              <div class="sl-op m-2 mb-3 p-1 custom-control custom-radio">
+                                <input type="radio"  class="custom-control-input" name="typeContador" id="typeContador2" value="condo">
+                                <label class="f-title custom-control-label" for="typeContador2">Contador Compartilhado</label>
+                                <div class="sb-c-l text-muted">
+                                  O contador é único (ou do condomínio), e gestão do consumo é com os hospedes do condomínio.
+                                </div>
                               </div>
                             </div>
+                          </div>
 
-                            <div class="sl-op m-2 mb-3 p-1 custom-control custom-radio">
-                              <input type="radio"  class="custom-control-input" name="aguaOption" id="aguaOption2" value="condo">
-                              <label class="f-title custom-control-label" for="aguaOption2">Fácil Acesso</label>
-                              <div class="sb-c-l text-muted">
-                                O contador é único (ou do condomínio), e gestão do consumo é com os hospedes do condomínio.
+                            <div>
+                            <div class="row bt-2 pl-3 pr-3">
+                              <div class="bt-label m-shadow bg-red-label" style="float-right">Água</div>
+                            </div>
+                            <div class="selection_options pl-4" style="margin-top:35px;">
+                              <div class="sl-op m-2 mb-3 p-1 custom-control custom-radio">
+                                <input type="radio"  class="custom-control-input" name="aguaOption" id="aguaOption1" value="condo">
+                                <label class="f-title custom-control-label" for="aguaOption1">No quintal</label>
+                                <div class="sb-c-l text-muted">
+                                  No contador particular, a gestão de compra e consumo de energia é com o hospede da casa.
+                                </div>
+                              </div>
+
+                              <div class="sl-op m-2 mb-3 p-1 custom-control custom-radio">
+                                <input type="radio"  class="custom-control-input" name="aguaOption" id="aguaOption2" value="condo">
+                                <label class="f-title custom-control-label" for="aguaOption2">Fácil Acesso</label>
+                                <div class="sb-c-l text-muted">
+                                  O contador é único (ou do condomínio), e gestão do consumo é com os hospedes do condomínio.
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
-
+                      </div>
+                      <div class="col-12 mt-4 p-0" style="height:150px;">
+                        <div class="float-md-right"><button class="btn btn-primary">Continuar</button></div>
                       </div>
                     </div>
-                  </transition>
                   </div>
                 </div>
-                <div class="step-3" style="display:none">
-                  a
+                <div class="step-3" style="display:block">
+                  <div class="m-4 col-md-6 p-3" style="max-width: 500px;">
+                    <div class="card border-0 ms-shadow p-3">
+                      <h4 class="_text-bc">Tipo de apartamento</h4>
+                      <p class="text-muted">Indique o tipo de casa na qual os estudantes serão hospedes.</p>
+                    </div>
+                    <div class="mt-4 border-top selection_from">
+                        <div class="mt-3">
+                          <div class="f-title" style="font-weight:500; text-transform:upercase">Nome do Apartamento</div>
+                          <p class="text-muted pb-1 m-0">Indique o tipo de casa na qual os estudantes serão hospedes.</p>
+                          <input type="text" name="nome_ap" id="inp-n-home" class="border-0 d-block w-100" placeholder="Nome do Apartamento">
+                        </div>
+
+                        <div class="mt-3">
+                          <div class="f-title mb-2" style="font-weight:500; text-transform:upercase">Descrição do Apartamento <em>({{nota_Desc.length}}  up to a {{text_maxlength}} characters)</em></div>
+                          <textarea id="textarea-home" v-model="nota_Desc" :maxlength="text_maxlength" class="border-0 w-100" placeholder="Digite..."></textarea>
+                          <p class="text-muted pt-2 pl-1 pr-1">A nota introdutória e uma apresentação sumaria da casa. note que ela e primeira informação que os usuários vão poder ver quando pesquisar sobre casas. <br> <b>Dica:</b> Seja criativo, e "Venda".</p>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="row m-5">
+                    <div class="pt-3 border-top" style="max-width:740px;">
+                      <div class="f-title mb-2" style="font-weight:500; text-transform:upercase">Descrição do Apartamento <em>(Seja criativo, e "Venda").</em></div>
+                      <textarea id="textarea-home" v-model="home_desc" class="border-0 w-100" placeholder="Digite..."></textarea>
+                      <p class="text-muted pt-2 pl-1 pr-1">A nota introdutória e uma apresentação sumaria da casa. note que ela e primeira informação que os usuários vão poder ver quando pesquisar sobre casas.</p>
+
+                      <div class="col-12 mt-4 p-0" style="height:150px;">
+                        <div class="float-md-right"><button class="btn btn-primary">Continuar</button></div>
+                      </div>
+                    </div>
+                  </div>
+
                 </div>
                 <div class="step-4" style="display:none">
                   a
@@ -207,6 +225,28 @@
 </template>
 
 <style scoped>
+
+  #inp-n-home{
+    font-family: -apple-system,BlinkMacSystemFont,"Roboto",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol" !important;
+    height: calc(2.75rem + 2px) !important;
+    background: none;
+    font-size: 1.6rem;
+    color: #383838;
+    font-weight: 500;
+    }
+
+  #textarea-home{
+    font-family: -apple-system,BlinkMacSystemFont,"Roboto",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol" !important;
+    min-height: 150px;
+    max-height: 150px;
+    background: none;
+    font-size: 1.3rem;
+    color: #383838;
+    font-weight: 400;
+    line-height: 1.50;
+    letter-spacing: .006em;
+  }
+
   .bt-label{
     border-radius: .35rem!important;
     display: inline-block;
@@ -272,12 +312,34 @@ export default {
         props : ['const_nav', 'id'],
         mounted() {
             console.log('NovaKaya Component mounted.'),
-            this.loaded(),
-            this.selectfunction()
+            this.loaded()
         },
 
         created() {
-          this.getProvincias()
+          this.getProvincias(),
+          this.getUniversidade(),
+          this.getDistritos()
+        },
+
+        data() {
+            return {
+              // Variaveis
+              text_maxlength: 140,
+              nota_Desc: '',
+              provincia_id: null,
+              distrito_id:null,
+              addFade:'my-fade',
+              hostType: null,
+              //EndPoints
+              provincias: [],
+              provs_endpoint: '/api/kaya/data/provincias/',
+              // Data Distritos
+              distritos: [],
+              distritosEndpoint: '/api/kaya/data/distritos/',
+              // Universidades
+              universidades:[],
+              universidadesEndpoint: '/api/kaya/data/universidades/',
+            }
         },
 
         methods: {
@@ -292,20 +354,30 @@ export default {
                   this.provincias = response.data
                 })
                 .catch( error => {
-                  console.log('-----error-------');
+                  console.log('----- Error on Load Províncias -------');
                   console.log(error)
                 })
+            },
+            getDistritos(){
+            axios(this.distritosEndpoint)
+                .then(response=>{
+                    this.distritos = response.data
+                })
+                .catch(error =>{
+                    console.log("----- Error on Load Distrito --------");
+                    console.log(error);
+                })
+            },
+            getUniversidade(){
+            axios(this.universidadesEndpoint)
+                .then(response =>{
+                    this.universidades = response.data
+                })
+                .catch(error =>{
+                    console.log("------ Error on Load Universidades------")
+                })
             }
-        },
-        data() {
-            return {
-              // Variaveis
-              addFade:'my-fade',
-              hostType: null,
-              //EndPoints
-              provincias: [],
-              provs_endpoint: '/api/kaya/data/provincias/'
-            }
-          }
+        }
+
     }
 </script>

@@ -1933,6 +1933,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   created: function created() {
     this.getProvincias(), this.getDistritos();
@@ -2332,15 +2334,75 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['const_nav', 'id'],
   mounted: function mounted() {
-    console.log('NovaKaya Component mounted.'), this.loaded(), this.selectfunction();
+    console.log('NovaKaya Component mounted.'), this.loaded();
   },
   created: function created() {
-    this.getProvincias();
+    this.getProvincias(), this.getUniversidade(), this.getDistritos();
+  },
+  data: function data() {
+    return {
+      // Variaveis
+      text_maxlength: 140,
+      nota_Desc: '',
+      provincia_id: null,
+      distrito_id: null,
+      addFade: 'my-fade',
+      hostType: null,
+      //EndPoints
+      provincias: [],
+      provs_endpoint: '/api/kaya/data/provincias/',
+      // Data Distritos
+      distritos: [],
+      distritosEndpoint: '/api/kaya/data/distritos/',
+      // Universidades
+      universidades: [],
+      universidadesEndpoint: '/api/kaya/data/universidades/'
+    };
   },
   methods: {
     loaded: function loaded() {
@@ -2356,20 +2418,29 @@ __webpack_require__.r(__webpack_exports__);
       axios__WEBPACK_IMPORTED_MODULE_1___default()(this.provs_endpoint).then(function (response) {
         _this.provincias = response.data;
       }).catch(function (error) {
-        console.log('-----error-------');
+        console.log('----- Error on Load Províncias -------');
         console.log(error);
       });
+    },
+    getDistritos: function getDistritos() {
+      var _this2 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_1___default()(this.distritosEndpoint).then(function (response) {
+        _this2.distritos = response.data;
+      }).catch(function (error) {
+        console.log("----- Error on Load Distrito --------");
+        console.log(error);
+      });
+    },
+    getUniversidade: function getUniversidade() {
+      var _this3 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_1___default()(this.universidadesEndpoint).then(function (response) {
+        _this3.universidades = response.data;
+      }).catch(function (error) {
+        console.log("------ Error on Load Universidades------");
+      });
     }
-  },
-  data: function data() {
-    return {
-      // Variaveis
-      addFade: 'my-fade',
-      hostType: null,
-      //EndPoints
-      provincias: [],
-      provs_endpoint: '/api/kaya/data/provincias/'
-    };
   }
 });
 
@@ -7418,7 +7489,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -7437,7 +7508,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.bt-label[data-v-0da3bd95]{\n    border-radius: .35rem!important;\n    display: inline-block;\n    font-size: 16px;\n    font-weight: 500;\n    line-height: 40px;\n    min-width: 140px;\n    position: relative;\n    text-align: center;\n    text-decoration: none;\n    font-family: -apple-system, BlinkMacSystemFont, 'Roboto', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif\n}\n.bg-orange-label[data-v-0da3bd95]{\n    background-color: #FCB036;\n    color: white;\n}\n.bg-red-label[data-v-0da3bd95]{\n    right: 25;\n    position: absolute;\n    background: #CE3737;\n    color: white;\n}\nhtml[data-v-0da3bd95],body[data-v-0da3bd95],.main_container[data-v-0da3bd95] {\n    height:100%;\n}\n.main_container[data-v-0da3bd95] {\n        display:table;\n        width: 100%;\n        margin-top: -50px;\n        padding: 50px 0 0 0; /*set left/right padding according to needs*/\n        box-sizing: border-box;\n        margin-left: auto;\n        margin-right: auto;\n}\n.m-row[data-v-0da3bd95] {\n        height: 100%;\n}\n.m-row .no-float[data-v-0da3bd95] {\n      display: table-cell;\n      float: none;\n}\n.sl-op label[data-v-0da3bd95]{\n      margin: 0px !important;\n      font-weight: 500;\n}\n.sb-c-l[data-v-0da3bd95]{\n      font-size: 15px;\n}\n", ""]);
+exports.push([module.i, "\n#inp-n-home[data-v-0da3bd95]{\n    font-family: -apple-system,BlinkMacSystemFont,\"Roboto\",Roboto,\"Helvetica Neue\",Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\",\"Segoe UI Symbol\" !important;\n    height: calc(2.75rem + 2px) !important;\n    background: none;\n    font-size: 1.6rem;\n    color: #383838;\n    font-weight: 500;\n}\n#textarea-home[data-v-0da3bd95]{\n    font-family: -apple-system,BlinkMacSystemFont,\"Roboto\",Roboto,\"Helvetica Neue\",Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\",\"Segoe UI Symbol\" !important;\n    min-height: 150px;\n    max-height: 150px;\n    background: none;\n    font-size: 1.3rem;\n    color: #383838;\n    font-weight: 400;\n    line-height: 1.50;\n    letter-spacing: .006em;\n}\n.bt-label[data-v-0da3bd95]{\n    border-radius: .35rem!important;\n    display: inline-block;\n    font-size: 16px;\n    font-weight: 500;\n    line-height: 40px;\n    min-width: 140px;\n    position: relative;\n    text-align: center;\n    text-decoration: none;\n    font-family: -apple-system, BlinkMacSystemFont, 'Roboto', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif\n}\n.bg-orange-label[data-v-0da3bd95]{\n    background-color: #FCB036;\n    color: white;\n}\n.bg-red-label[data-v-0da3bd95]{\n    right: 25;\n    position: absolute;\n    background: #CE3737;\n    color: white;\n}\nhtml[data-v-0da3bd95],body[data-v-0da3bd95],.main_container[data-v-0da3bd95] {\n    height:100%;\n}\n.main_container[data-v-0da3bd95] {\n        display:table;\n        width: 100%;\n        margin-top: -50px;\n        padding: 50px 0 0 0; /*set left/right padding according to needs*/\n        box-sizing: border-box;\n        margin-left: auto;\n        margin-right: auto;\n}\n.m-row[data-v-0da3bd95] {\n        height: 100%;\n}\n.m-row .no-float[data-v-0da3bd95] {\n      display: table-cell;\n      float: none;\n}\n.sl-op label[data-v-0da3bd95]{\n      margin: 0px !important;\n      font-weight: 500;\n}\n.sb-c-l[data-v-0da3bd95]{\n      font-size: 15px;\n}\n", ""]);
 
 // exports
 
@@ -38905,20 +38976,24 @@ var render = function() {
                           }
                         }
                       },
-                      _vm._l(_vm.distritos, function(distrito) {
-                        return _vm.distritos
-                          ? _c(
-                              "option",
-                              {
-                                key: distrito.id,
-                                attrs: { p_id: distrito.provincia_id },
-                                domProps: { value: distrito.id }
-                              },
-                              [_vm._v(_vm._s(distrito.nome))]
-                            )
-                          : _vm._e()
-                      }),
-                      0
+                      [
+                        _c("option", { domProps: { value: null } }, [
+                          _vm._v("Distritos")
+                        ]),
+                        _vm._v(" "),
+                        _vm._l(_vm.distritos, function(distrito) {
+                          return _c(
+                            "option",
+                            {
+                              key: distrito.id,
+                              attrs: { p_id: distrito.provincia_id },
+                              domProps: { value: distrito.id }
+                            },
+                            [_vm._v(_vm._s(distrito.nome))]
+                          )
+                        })
+                      ],
+                      2
                     )
                   ])
                 ]),
@@ -39110,17 +39185,23 @@ var render = function() {
                           }
                         }
                       },
-                      _vm._l(_vm.provincias, function(provincia) {
-                        return _c(
-                          "option",
-                          {
-                            key: provincia.id,
-                            domProps: { value: provincia.id }
-                          },
-                          [_vm._v(_vm._s(provincia.nome))]
-                        )
-                      }),
-                      0
+                      [
+                        _c("option", { domProps: { value: null } }, [
+                          _vm._v("Províncias")
+                        ]),
+                        _vm._v(" "),
+                        _vm._l(_vm.provincias, function(provincia) {
+                          return _c(
+                            "option",
+                            {
+                              key: provincia.id,
+                              domProps: { value: provincia.id }
+                            },
+                            [_vm._v(_vm._s(provincia.nome))]
+                          )
+                        })
+                      ],
+                      2
                     )
                   ])
                 ]),
@@ -39471,17 +39552,46 @@ var render = function() {
                                 _c(
                                   "select",
                                   {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.provincia_id,
+                                        expression: "provincia_id"
+                                      }
+                                    ],
                                     staticClass:
                                       "custom-select d-block w-100 ng-binding",
                                     staticStyle: {
                                       height: "calc(2.75rem + 2px) !important"
                                     },
-                                    attrs: { name: "prov", id: "" }
+                                    attrs: { name: "prov", id: "" },
+                                    on: {
+                                      change: function($event) {
+                                        var $$selectedVal = Array.prototype.filter
+                                          .call($event.target.options, function(
+                                            o
+                                          ) {
+                                            return o.selected
+                                          })
+                                          .map(function(o) {
+                                            var val =
+                                              "_value" in o ? o._value : o.value
+                                            return val
+                                          })
+                                        _vm.provincia_id = $event.target
+                                          .multiple
+                                          ? $$selectedVal
+                                          : $$selectedVal[0]
+                                      }
+                                    }
                                   },
                                   [
-                                    _c("option", { attrs: { value: "" } }, [
-                                      _vm._v("Províncias")
-                                    ]),
+                                    _c(
+                                      "option",
+                                      { domProps: { value: null } },
+                                      [_vm._v("Províncias...")]
+                                    ),
                                     _vm._v(" "),
                                     _vm._l(_vm.provincias, function(provincia) {
                                       return _c(
@@ -39499,21 +39609,158 @@ var render = function() {
                               ])
                             ]),
                             _vm._v(" "),
-                            _vm._m(2)
+                            _c("div", { staticClass: "col-6 pl-0 pr-0" }, [
+                              _c(
+                                "div",
+                                {
+                                  staticClass: "f-title mb-2",
+                                  staticStyle: {
+                                    "font-weight": "500",
+                                    "text-transform": "upercase"
+                                  }
+                                },
+                                [_vm._v("Distrito")]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "select",
+                                {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.distrito_id,
+                                      expression: "distrito_id"
+                                    }
+                                  ],
+                                  staticClass:
+                                    "custom-select d-block w-100 ng-binding",
+                                  staticStyle: {
+                                    height: "calc(2.75rem + 2px) !important"
+                                  },
+                                  attrs: { name: "distrito_id", id: "" },
+                                  on: {
+                                    change: function($event) {
+                                      var $$selectedVal = Array.prototype.filter
+                                        .call($event.target.options, function(
+                                          o
+                                        ) {
+                                          return o.selected
+                                        })
+                                        .map(function(o) {
+                                          var val =
+                                            "_value" in o ? o._value : o.value
+                                          return val
+                                        })
+                                      _vm.distrito_id = $event.target.multiple
+                                        ? $$selectedVal
+                                        : $$selectedVal[0]
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("option", { domProps: { value: null } }, [
+                                    _vm._v("Distritos...")
+                                  ]),
+                                  _vm._v(" "),
+                                  _vm._l(_vm.distritos, function(distrito) {
+                                    return _c(
+                                      "option",
+                                      {
+                                        key: distrito.id,
+                                        attrs: { p_id: distrito.provincia_id },
+                                        domProps: { value: distrito.id }
+                                      },
+                                      [_vm._v(_vm._s(distrito.nome))]
+                                    )
+                                  })
+                                ],
+                                2
+                              )
+                            ])
                           ]),
                           _vm._v(" "),
-                          _vm._m(3)
+                          _c("div", { staticClass: "m-0" }, [
+                            _c("div", { staticClass: "col-12 mt-4 p-0" }, [
+                              _c(
+                                "div",
+                                {
+                                  staticClass: "f-title text-muted mb-2",
+                                  staticStyle: {
+                                    "font-weight": "500",
+                                    "text-transform": "upercase"
+                                  }
+                                },
+                                [_vm._v("Selecione as faculdades")]
+                              ),
+                              _vm._v(" "),
+                              _c("p", { staticClass: "text-muted" }, [
+                                _vm._v(
+                                  " will only get your exact address once they’ve booked a reservation."
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c(
+                                "div",
+                                {
+                                  staticClass: "ms-shadow p-2 bg-white rounded",
+                                  staticStyle: { "min-height": "230px" }
+                                },
+                                _vm._l(_vm.universidades, function(
+                                  universidade
+                                ) {
+                                  return _c(
+                                    "div",
+                                    {
+                                      key: universidade.id,
+                                      staticClass: "row m-0"
+                                    },
+                                    [
+                                      _c(
+                                        "div",
+                                        {
+                                          staticClass:
+                                            "custom-control custom-radio sel-l-opt"
+                                        },
+                                        [
+                                          _c("input", {
+                                            staticClass: "custom-control-input",
+                                            attrs: {
+                                              type: "checkbox",
+                                              id: universidade.id
+                                            },
+                                            domProps: { value: universidade.id }
+                                          }),
+                                          _vm._v(" "),
+                                          _c(
+                                            "label",
+                                            {
+                                              staticClass:
+                                                "custom-control-label my-custom-label",
+                                              attrs: { for: universidade.id }
+                                            },
+                                            [_vm._v(_vm._s(universidade.nome))]
+                                          )
+                                        ]
+                                      )
+                                    ]
+                                  )
+                                }),
+                                0
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _vm._m(2)
+                          ])
                         ])
                       ]
-                    ),
-                    _vm._v(" "),
-                    _vm._m(4)
+                    )
                   ]
                 ),
                 _vm._v(" "),
                 _c(
                   "div",
-                  { staticClass: "step-2 ", staticStyle: { display: "block" } },
+                  { staticClass: "step-2 ", staticStyle: { display: "none" } },
                   [
                     _c(
                       "div",
@@ -39701,299 +39948,144 @@ var render = function() {
                           ]
                         ),
                         _vm._v(" "),
-                        _c(
-                          "transition",
-                          { attrs: { name: "expand", mode: "in-out" } },
-                          [
-                            _vm.hostType
-                              ? _c(
-                                  "div",
-                                  {
-                                    staticClass:
-                                      "mt-4 p-3 card border-0 ms-shadow"
-                                  },
-                                  [
-                                    _c("h4", { staticClass: "_text-bc " }, [
-                                      _vm._v("Condições do imóvel")
-                                    ]),
-                                    _vm._v(" "),
-                                    _c("p", { staticClass: "text-muted" }, [
-                                      _vm._v(
-                                        "Indique o tipo de casa na qual os estudantes serão hospedes (rever texto)."
-                                      )
-                                    ]),
-                                    _vm._v(" "),
-                                    _c(
-                                      "div",
-                                      {
-                                        staticClass:
-                                          "pt-3 border-top selection_from"
-                                      },
-                                      [
-                                        _c("div", [
-                                          _c(
-                                            "div",
-                                            {
-                                              staticClass: "row bt-2 pl-3 pr-3"
-                                            },
-                                            [
-                                              _c(
-                                                "div",
-                                                {
-                                                  staticClass:
-                                                    "bt-label m-shadow bg-orange-label"
-                                                },
-                                                [_vm._v("Energia")]
-                                              )
-                                            ]
-                                          ),
-                                          _vm._v(" "),
-                                          _c(
-                                            "div",
-                                            {
-                                              staticClass:
-                                                "selection_options pl-4"
-                                            },
-                                            [
-                                              _c(
-                                                "div",
-                                                {
-                                                  staticClass:
-                                                    "sl-op m-2 mb-3 p-1 custom-control custom-radio"
-                                                },
-                                                [
-                                                  _c("input", {
-                                                    staticClass:
-                                                      "custom-control-input",
-                                                    attrs: {
-                                                      type: "radio",
-                                                      name: "typeContador",
-                                                      id: "typeContador1",
-                                                      value: "condo"
-                                                    }
-                                                  }),
-                                                  _vm._v(" "),
-                                                  _c(
-                                                    "label",
-                                                    {
-                                                      staticClass:
-                                                        "f-title custom-control-label",
-                                                      attrs: {
-                                                        for: "typeContador1"
-                                                      }
-                                                    },
-                                                    [
-                                                      _vm._v(
-                                                        "Contador Particular"
-                                                      )
-                                                    ]
-                                                  ),
-                                                  _vm._v(" "),
-                                                  _c(
-                                                    "div",
-                                                    {
-                                                      staticClass:
-                                                        "sb-c-l text-muted"
-                                                    },
-                                                    [
-                                                      _vm._v(
-                                                        "\n                            No contador particular, a gestão de compra e consumo de energia é com o hospede da casa.\n                          "
-                                                      )
-                                                    ]
-                                                  )
-                                                ]
-                                              ),
-                                              _vm._v(" "),
-                                              _c(
-                                                "div",
-                                                {
-                                                  staticClass:
-                                                    "sl-op m-2 mb-3 p-1 custom-control custom-radio"
-                                                },
-                                                [
-                                                  _c("input", {
-                                                    staticClass:
-                                                      "custom-control-input",
-                                                    attrs: {
-                                                      type: "radio",
-                                                      name: "typeContador",
-                                                      id: "typeContador2",
-                                                      value: "condo"
-                                                    }
-                                                  }),
-                                                  _vm._v(" "),
-                                                  _c(
-                                                    "label",
-                                                    {
-                                                      staticClass:
-                                                        "f-title custom-control-label",
-                                                      attrs: {
-                                                        for: "typeContador2"
-                                                      }
-                                                    },
-                                                    [
-                                                      _vm._v(
-                                                        "Contador Compartilhado"
-                                                      )
-                                                    ]
-                                                  ),
-                                                  _vm._v(" "),
-                                                  _c(
-                                                    "div",
-                                                    {
-                                                      staticClass:
-                                                        "sb-c-l text-muted"
-                                                    },
-                                                    [
-                                                      _vm._v(
-                                                        "\n                            O contador é único (ou do condomínio), e gestão do consumo é com os hospedes do condomínio.\n                          "
-                                                      )
-                                                    ]
-                                                  )
-                                                ]
-                                              )
-                                            ]
-                                          )
-                                        ]),
-                                        _vm._v(" "),
-                                        _c("div", [
-                                          _c(
-                                            "div",
-                                            {
-                                              staticClass: "row bt-2 pl-3 pr-3"
-                                            },
-                                            [
-                                              _c(
-                                                "div",
-                                                {
-                                                  staticClass:
-                                                    "bt-label m-shadow bg-red-label",
-                                                  staticStyle: {}
-                                                },
-                                                [_vm._v("Água")]
-                                              )
-                                            ]
-                                          ),
-                                          _vm._v(" "),
-                                          _c(
-                                            "div",
-                                            {
-                                              staticClass:
-                                                "selection_options pl-4",
-                                              staticStyle: {
-                                                "margin-top": "35px"
-                                              }
-                                            },
-                                            [
-                                              _c(
-                                                "div",
-                                                {
-                                                  staticClass:
-                                                    "sl-op m-2 mb-3 p-1 custom-control custom-radio"
-                                                },
-                                                [
-                                                  _c("input", {
-                                                    staticClass:
-                                                      "custom-control-input",
-                                                    attrs: {
-                                                      type: "radio",
-                                                      name: "aguaOption",
-                                                      id: "aguaOption1",
-                                                      value: "condo"
-                                                    }
-                                                  }),
-                                                  _vm._v(" "),
-                                                  _c(
-                                                    "label",
-                                                    {
-                                                      staticClass:
-                                                        "f-title custom-control-label",
-                                                      attrs: {
-                                                        for: "aguaOption1"
-                                                      }
-                                                    },
-                                                    [_vm._v("No quintal")]
-                                                  ),
-                                                  _vm._v(" "),
-                                                  _c(
-                                                    "div",
-                                                    {
-                                                      staticClass:
-                                                        "sb-c-l text-muted"
-                                                    },
-                                                    [
-                                                      _vm._v(
-                                                        "\n                            No contador particular, a gestão de compra e consumo de energia é com o hospede da casa.\n                          "
-                                                      )
-                                                    ]
-                                                  )
-                                                ]
-                                              ),
-                                              _vm._v(" "),
-                                              _c(
-                                                "div",
-                                                {
-                                                  staticClass:
-                                                    "sl-op m-2 mb-3 p-1 custom-control custom-radio"
-                                                },
-                                                [
-                                                  _c("input", {
-                                                    staticClass:
-                                                      "custom-control-input",
-                                                    attrs: {
-                                                      type: "radio",
-                                                      name: "aguaOption",
-                                                      id: "aguaOption2",
-                                                      value: "condo"
-                                                    }
-                                                  }),
-                                                  _vm._v(" "),
-                                                  _c(
-                                                    "label",
-                                                    {
-                                                      staticClass:
-                                                        "f-title custom-control-label",
-                                                      attrs: {
-                                                        for: "aguaOption2"
-                                                      }
-                                                    },
-                                                    [_vm._v("Fácil Acesso")]
-                                                  ),
-                                                  _vm._v(" "),
-                                                  _c(
-                                                    "div",
-                                                    {
-                                                      staticClass:
-                                                        "sb-c-l text-muted"
-                                                    },
-                                                    [
-                                                      _vm._v(
-                                                        "\n                            O contador é único (ou do condomínio), e gestão do consumo é com os hospedes do condomínio.\n                          "
-                                                      )
-                                                    ]
-                                                  )
-                                                ]
-                                              )
-                                            ]
-                                          )
-                                        ])
-                                      ]
-                                    )
-                                  ]
-                                )
-                              : _vm._e()
-                          ]
-                        )
-                      ],
-                      1
+                        _vm.hostType
+                          ? _c("div", { attrs: { mode: "in-out" } }, [
+                              _vm._m(3),
+                              _vm._v(" "),
+                              _vm._m(4)
+                            ])
+                          : _vm._e()
+                      ]
                     )
                   ]
                 ),
                 _vm._v(" "),
                 _c(
                   "div",
-                  { staticClass: "step-3", staticStyle: { display: "none" } },
-                  [_vm._v("\n              a\n            ")]
+                  { staticClass: "step-3", staticStyle: { display: "block" } },
+                  [
+                    _c(
+                      "div",
+                      {
+                        staticClass: "m-4 col-md-6 p-3",
+                        staticStyle: { "max-width": "500px" }
+                      },
+                      [
+                        _vm._m(5),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          { staticClass: "mt-4 border-top selection_from" },
+                          [
+                            _vm._m(6),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "mt-3" }, [
+                              _c(
+                                "div",
+                                {
+                                  staticClass: "f-title mb-2",
+                                  staticStyle: {
+                                    "font-weight": "500",
+                                    "text-transform": "upercase"
+                                  }
+                                },
+                                [
+                                  _vm._v("Descrição do Apartamento "),
+                                  _c("em", [
+                                    _vm._v(
+                                      "(" +
+                                        _vm._s(_vm.nota_Desc.length) +
+                                        "  up to a " +
+                                        _vm._s(_vm.text_maxlength) +
+                                        " characters)"
+                                    )
+                                  ])
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c("textarea", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.nota_Desc,
+                                    expression: "nota_Desc"
+                                  }
+                                ],
+                                staticClass: "border-0 w-100",
+                                attrs: {
+                                  id: "textarea-home",
+                                  maxlength: _vm.text_maxlength,
+                                  placeholder: "Digite..."
+                                },
+                                domProps: { value: _vm.nota_Desc },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.nota_Desc = $event.target.value
+                                  }
+                                }
+                              }),
+                              _vm._v(" "),
+                              _vm._m(7)
+                            ])
+                          ]
+                        )
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "row m-5" }, [
+                      _c(
+                        "div",
+                        {
+                          staticClass: "pt-3 border-top",
+                          staticStyle: { "max-width": "740px" }
+                        },
+                        [
+                          _vm._m(8),
+                          _vm._v(" "),
+                          _c("textarea", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.home_desc,
+                                expression: "home_desc"
+                              }
+                            ],
+                            staticClass: "border-0 w-100",
+                            attrs: {
+                              id: "textarea-home",
+                              placeholder: "Digite..."
+                            },
+                            domProps: { value: _vm.home_desc },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.home_desc = $event.target.value
+                              }
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c(
+                            "p",
+                            { staticClass: "text-muted pt-2 pl-1 pr-1" },
+                            [
+                              _vm._v(
+                                "A nota introdutória e uma apresentação sumaria da casa. note que ela e primeira informação que os usuários vão poder ver quando pesquisar sobre casas."
+                              )
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _vm._m(9)
+                        ]
+                      )
+                    ])
+                  ]
                 ),
                 _vm._v(" "),
                 _c(
@@ -40138,72 +40230,9 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-6 pl-0 pr-0" }, [
-      _c(
-        "div",
-        {
-          staticClass: "f-title mb-2",
-          staticStyle: { "font-weight": "500", "text-transform": "upercase" }
-        },
-        [_vm._v("Distrito")]
-      ),
-      _vm._v(" "),
-      _c(
-        "select",
-        {
-          staticClass: "custom-select d-block w-100 ng-binding",
-          staticStyle: { height: "calc(2.75rem + 2px) !important" },
-          attrs: { name: "destrito", id: "" }
-        },
-        [_c("option", { attrs: { value: "Maputo" } }, [_vm._v("Kambukuana")])]
-      )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "m-0" }, [
-      _c("div", { staticClass: "col-12 mt-4 p-0" }, [
-        _c(
-          "div",
-          {
-            staticClass: "f-title text-muted mb-2",
-            staticStyle: { "font-weight": "500", "text-transform": "upercase" }
-          },
-          [_vm._v("Selecione as faculdades")]
-        ),
-        _vm._v(" "),
-        _c("p", { staticClass: "text-muted" }, [
-          _vm._v(
-            " will only get your exact address once they’ve booked a reservation."
-          )
-        ]),
-        _vm._v(" "),
-        _c(
-          "div",
-          {
-            staticClass: "border p-2 bg-white rounded",
-            staticStyle: { "min-height": "230px" }
-          },
-          [
-            _c("div", { staticClass: "rounded p-1" }, [
-              _c("input", {
-                attrs: { type: "checkbox", id: "jack", value: "Jack" }
-              }),
-              _vm._v(" "),
-              _c("label", { attrs: { for: "jack" } }, [_vm._v("UEM-ESNEC")])
-            ])
-          ]
-        )
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-12 mt-4 p-0" }, [
-        _c("div", { staticClass: "float-md-right" }, [
-          _c("button", { staticClass: "btn btn-primary" }, [
-            _vm._v("Continuar")
-          ])
-        ])
+    return _c("div", { staticClass: "col-12 mt-4 p-0" }, [
+      _c("div", { staticClass: "float-md-right" }, [
+        _c("button", { staticClass: "btn btn-primary" }, [_vm._v("Continuar")])
       ])
     ])
   },
@@ -40214,43 +40243,286 @@ var staticRenderFns = [
     return _c(
       "div",
       {
-        staticClass: "m-4 col-md-6 p-3",
-        staticStyle: { "max-width": "500px", display: "none" }
+        staticClass: "mt-4 p-3 card border-0 ms-shadow",
+        attrs: { transation: "expand" }
       },
       [
-        _c("h4", { staticClass: "_text-c" }, [
-          _vm._v("Where’s your place located?")
-        ]),
+        _c("h4", { staticClass: "_text-bc " }, [_vm._v("Condições do imóvel")]),
         _vm._v(" "),
-        _c("p", [
+        _c("p", { staticClass: "text-muted" }, [
           _vm._v(
-            " will only get your exact address once they’ve booked a reservation."
+            "Indique o tipo de casa na qual os estudantes serão hospedes (rever texto)."
           )
         ]),
         _vm._v(" "),
-        _c("div", { staticClass: "_from" }, [
+        _c("div", { staticClass: "pt-3 border-top selection_from" }, [
           _c("div", [
+            _c("div", { staticClass: "row bt-2 pl-3 pr-3" }, [
+              _c("div", { staticClass: "bt-label m-shadow bg-orange-label" }, [
+                _vm._v("Energia")
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "selection_options pl-4" }, [
+              _c(
+                "div",
+                {
+                  staticClass: "sl-op m-2 mb-3 p-1 custom-control custom-radio"
+                },
+                [
+                  _c("input", {
+                    staticClass: "custom-control-input",
+                    attrs: {
+                      type: "radio",
+                      name: "typeContador",
+                      id: "typeContador1",
+                      value: "condo"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "label",
+                    {
+                      staticClass: "f-title custom-control-label",
+                      attrs: { for: "typeContador1" }
+                    },
+                    [_vm._v("Contador Particular")]
+                  ),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "sb-c-l text-muted" }, [
+                    _vm._v(
+                      "\n                              No contador particular, a gestão de compra e consumo de energia é com o hospede da casa.\n                            "
+                    )
+                  ])
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticClass: "sl-op m-2 mb-3 p-1 custom-control custom-radio"
+                },
+                [
+                  _c("input", {
+                    staticClass: "custom-control-input",
+                    attrs: {
+                      type: "radio",
+                      name: "typeContador",
+                      id: "typeContador2",
+                      value: "condo"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "label",
+                    {
+                      staticClass: "f-title custom-control-label",
+                      attrs: { for: "typeContador2" }
+                    },
+                    [_vm._v("Contador Compartilhado")]
+                  ),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "sb-c-l text-muted" }, [
+                    _vm._v(
+                      "\n                              O contador é único (ou do condomínio), e gestão do consumo é com os hospedes do condomínio.\n                            "
+                    )
+                  ])
+                ]
+              )
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", [
+            _c("div", { staticClass: "row bt-2 pl-3 pr-3" }, [
+              _c(
+                "div",
+                {
+                  staticClass: "bt-label m-shadow bg-red-label",
+                  staticStyle: {}
+                },
+                [_vm._v("Água")]
+              )
+            ]),
+            _vm._v(" "),
             _c(
               "div",
               {
-                staticStyle: {
-                  "font-weight": "500",
-                  "text-transform": "upercase"
-                }
+                staticClass: "selection_options pl-4",
+                staticStyle: { "margin-top": "35px" }
               },
-              [_vm._v("Pais")]
-            ),
-            _vm._v(" "),
-            _c("div", [
-              _c(
-                "select",
-                {
-                  staticClass: "form-control",
-                  attrs: { name: "pais", id: "" }
-                },
-                [_c("option", { attrs: { value: "Moz" } }, [_vm._v("Moz")])]
-              )
-            ])
+              [
+                _c(
+                  "div",
+                  {
+                    staticClass:
+                      "sl-op m-2 mb-3 p-1 custom-control custom-radio"
+                  },
+                  [
+                    _c("input", {
+                      staticClass: "custom-control-input",
+                      attrs: {
+                        type: "radio",
+                        name: "aguaOption",
+                        id: "aguaOption1",
+                        value: "condo"
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c(
+                      "label",
+                      {
+                        staticClass: "f-title custom-control-label",
+                        attrs: { for: "aguaOption1" }
+                      },
+                      [_vm._v("No quintal")]
+                    ),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "sb-c-l text-muted" }, [
+                      _vm._v(
+                        "\n                              No contador particular, a gestão de compra e consumo de energia é com o hospede da casa.\n                            "
+                      )
+                    ])
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  {
+                    staticClass:
+                      "sl-op m-2 mb-3 p-1 custom-control custom-radio"
+                  },
+                  [
+                    _c("input", {
+                      staticClass: "custom-control-input",
+                      attrs: {
+                        type: "radio",
+                        name: "aguaOption",
+                        id: "aguaOption2",
+                        value: "condo"
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c(
+                      "label",
+                      {
+                        staticClass: "f-title custom-control-label",
+                        attrs: { for: "aguaOption2" }
+                      },
+                      [_vm._v("Fácil Acesso")]
+                    ),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "sb-c-l text-muted" }, [
+                      _vm._v(
+                        "\n                              O contador é único (ou do condomínio), e gestão do consumo é com os hospedes do condomínio.\n                            "
+                      )
+                    ])
+                  ]
+                )
+              ]
+            )
+          ])
+        ])
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      { staticClass: "col-12 mt-4 p-0", staticStyle: { height: "150px" } },
+      [
+        _c("div", { staticClass: "float-md-right" }, [
+          _c("button", { staticClass: "btn btn-primary" }, [
+            _vm._v("Continuar")
+          ])
+        ])
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card border-0 ms-shadow p-3" }, [
+      _c("h4", { staticClass: "_text-bc" }, [_vm._v("Tipo de apartamento")]),
+      _vm._v(" "),
+      _c("p", { staticClass: "text-muted" }, [
+        _vm._v("Indique o tipo de casa na qual os estudantes serão hospedes.")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "mt-3" }, [
+      _c(
+        "div",
+        {
+          staticClass: "f-title",
+          staticStyle: { "font-weight": "500", "text-transform": "upercase" }
+        },
+        [_vm._v("Nome do Apartamento")]
+      ),
+      _vm._v(" "),
+      _c("p", { staticClass: "text-muted pb-1 m-0" }, [
+        _vm._v("Indique o tipo de casa na qual os estudantes serão hospedes.")
+      ]),
+      _vm._v(" "),
+      _c("input", {
+        staticClass: "border-0 d-block w-100",
+        attrs: {
+          type: "text",
+          name: "nome_ap",
+          id: "inp-n-home",
+          placeholder: "Nome do Apartamento"
+        }
+      })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("p", { staticClass: "text-muted pt-2 pl-1 pr-1" }, [
+      _vm._v(
+        "A nota introdutória e uma apresentação sumaria da casa. note que ela e primeira informação que os usuários vão poder ver quando pesquisar sobre casas. "
+      ),
+      _c("br"),
+      _vm._v(" "),
+      _c("b", [_vm._v("Dica:")]),
+      _vm._v(' Seja criativo, e "Venda".')
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass: "f-title mb-2",
+        staticStyle: { "font-weight": "500", "text-transform": "upercase" }
+      },
+      [
+        _vm._v("Descrição do Apartamento "),
+        _c("em", [_vm._v('(Seja criativo, e "Venda").')])
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      { staticClass: "col-12 mt-4 p-0", staticStyle: { height: "150px" } },
+      [
+        _c("div", { staticClass: "float-md-right" }, [
+          _c("button", { staticClass: "btn btn-primary" }, [
+            _vm._v("Continuar")
           ])
         ])
       ]

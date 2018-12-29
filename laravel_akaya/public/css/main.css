@@ -190,6 +190,53 @@ img {
   opacity: 0;
 }
 
+.my-custom-label::before{
+  top: .45rem !important;
+  left: -.55rem !important;
+}
+
+.sel-l-opt .custom-control-label::after {
+    left: -1.5rem !important;
+
+}
+
+.my-custom-label::after{
+  top: .45rem !important;
+  left: -.55rem !important;
+}
+
+/****
+Custom checked label
+*****/
+
+.custom-radio .custom-control-input:checked~.my-custom-label::before {
+    background-color: #545b62 !important;
+    border: none;
+}
+
+.custom-radio .custom-control-input:checked~.my-custom-label::after {
+    background-image: none !important;
+}
+
+.sel-l-opt{
+    padding-left: 14;
+    border-radius: 60px;
+    background-color: #e9ecef;
+    font-family: -apple-system,BlinkMacSystemFont,"Roboto",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol" !important;
+    font-weight: 500;
+    cursor: pointer;
+    margin: 4px 6px;
+}
+
+.sel-l-opt label{
+    border: 1px solid #e9ecef;
+    padding: 4px 12;
+    border-radius: 60px;
+    background: #e9ecef;
+    cursor: pointer;
+    margin: 0px;
+}
+
 
 .h-el{
   height: auto;
@@ -220,7 +267,7 @@ img {
     border: none;
 }
 
-.custom-control-label::after{
+.custom-control .custom-control-label::after{
   left: -1.5rem !important;
 }
 
