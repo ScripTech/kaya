@@ -38,6 +38,7 @@ use Illuminate\Http\Request;
 
     Route::get('/data/provincias', 'ProvinciaController@index');
     Route::get('/data/provincias/{id}', 'ProvinciaController@show');
+    Route::get('/data/provincias/{id}/distritos', 'ProvinciaController@showDistritos');
     Route::post('/data/provincias', 'ProvinciaController@store');
     Route::delete('/data/provincias/{id}', 'ProvinciaController@destroy');
     Route::put('/data/provincias/{id}', 'ProvinciaController@update');
@@ -45,6 +46,7 @@ use Illuminate\Http\Request;
     // Todos Distritos -> path /data/distrito
     Route::get('/data/distritos', 'DistritoController@index');
     Route::get('/data/distritos/{id}', 'DistritoController@show');
+
     Route::post('/data/distritos', 'DistritoController@store');
     Route::delete('/data/distritos/{id}', 'DistritoController@destroy');
     Route::put('/data/distritos/{id}', 'DistritoController@update');

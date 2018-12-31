@@ -38,8 +38,7 @@ import PinHome from '@/js/components/PinHome';
                 path: '/room/:id',
                 name: 'Room',
                 component: Room,
-                props: { true:'true',
-                    const_nav: "_room" }
+                props: { true: 'true', const_nav: "_room" }
             },
             {
                 path: '/novo/post',

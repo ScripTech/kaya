@@ -32,7 +32,7 @@
                                 <span title="Renda Mensal">
                                     <div class="room-price bt-active">1,500.00 MT</div>
                                     <div class="room-like p-2 flex-c-m  m-shadow">
-                                        <span data-feather="heart" style="width:20px !important; height:20px !important;"></span>
+                                       <heart-icon class="custom-class" style="width:20px !important; height:20px !important;"></heart-icon>
                                         <div class="pl-1" style="text-align: center;">
                                             <div style="font-weight: 500"><span class="_nlikes">154</span><span> Gostos</span></div>
                                             <input type="hidden" id="_u" value="tokken">
@@ -72,7 +72,7 @@
                                 <span title="Renda Mensal">
                                     <div class="room-price bt-active">1,500.00 MT</div>
                                     <div class="room-like p-2 flex-c-m  m-shadow">
-                                        <span data-feather="heart" style="width:20px !important; height:20px !important;"></span>
+                                        <heart-icon class="custom-class" style="width:20px !important; height:20px !important;"></heart-icon>
                                         <div class="pl-1" style="text-align: center;">
                                             <div style="font-weight: 500"><span class="_nlikes">154</span><span> Gostos</span></div>
                                             <input type="hidden" id="_u" value="tokken">
@@ -112,7 +112,7 @@
                                 <span title="Renda Mensal">
                                     <div class="room-price bt-active">1,500.00 MT</div>
                                     <div class="room-like p-2 flex-c-m  m-shadow">
-                                        <span data-feather="heart" style="width:20px !important; height:20px !important;"></span>
+                                        <heart-icon class="custom-class" style="width:20px !important; height:20px !important;"></heart-icon>
                                         <div class="pl-1" style="text-align: center;">
                                             <div style="font-weight: 500"><span class="_nlikes">154</span><span> Gostos</span></div>
                                             <input type="hidden" id="_u" value="tokken">
@@ -309,7 +309,15 @@
 
 
 <script>
+import { EyeIcon } from 'vue-feather-icons'
+import { BookmarkIcon } from 'vue-feather-icons'
+import { HeartIcon } from 'vue-feather-icons'
     export default {
+        components: {
+            BookmarkIcon,
+            EyeIcon,
+            HeartIcon
+        },
         props : ['const_nav'],
         mounted() {
             console.log('Rooms Component mounted.'),
@@ -317,7 +325,7 @@
         },
         methods: {
             loaded: function () {
-                feather.replace();
+
                 $('.navbar').removeClass('nav-menu_show').removeClass('bg-wihte-op');
                 $('.container').addClass('container-fluid').removeClass('container');
                 $('.nav-search-cont').css({

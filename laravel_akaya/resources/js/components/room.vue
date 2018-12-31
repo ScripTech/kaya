@@ -1,30 +1,31 @@
-<template lang="pug">
+<template>
     <div>
         <div class="main_bg col-md-12" target="false">
-    <!-- Colocar 4 Imagens da casa-->
-    <div class="row h-100">
-        <div class="col-md-6">
+            <!-- Colocar 4 Imagens da casa-->
             <div class="row h-100">
-                <div class="col-6 p-0 border-right hov-img-zoom bg-primary">
-                    <img class="card-img" src="images/main.png" alt="Room Photos" style="height:100%; width: 100%; display: block;" data-holder-rendered="true">
+                <div class="col-md-6">
+                    <div class="row h-100">
+                        <div class="col-6 p-0 border-right hov-img-zoom bg-primary">
+                            <img class="card-img" src="images/main.png" alt="Room Photos" style="height:100%; width: 100%; display: block;" data-holder-rendered="true">
+                        </div>
+                        <div class="col-6 p-0 border-right hov-img-zoom bg-secondary">
+                            <img class="card-img" src="images/avatar01.JPG" alt="Room Photos" style="height:100%; width: 100%; display: block;" data-holder-rendered="true">
+                        </div>
+                    </div>
                 </div>
-                <div class="col-6 p-0 border-right hov-img-zoom bg-secondary">
-                    <img class="card-img" src="images/avatar01.JPG" alt="Room Photos" style="height:100%; width: 100%; display: block;" data-holder-rendered="true">
+
+                <div class="col-md-6">
+                    <div class="row h-100">
+                        <div class="col-6 p-0 border-right hov-img-zoom bg-success">
+                            <img class="card-img" src="images/colleagues.jpg" alt="Room Photos" style="height:100%; width: 100%; display: block;" data-holder-rendered="true">
+                        </div>
+                        <div class="col-6 p-0 hov-img-zoom bg-warning">
+                            <img class="card-img" src="images/backend.jpg" alt="Room Photos" style="height:100%; width: 100%; display: block;" data-holder-rendered="true">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="row h-100">
-                <div class="col-6 p-0 border-right hov-img-zoom bg-success">
-                    <img class="card-img" src="images/colleagues.jpg" alt="Room Photos" style="height:100%; width: 100%; display: block;" data-holder-rendered="true">
-                </div>
-                <div class="col-6 p-0 hov-img-zoom bg-warning">
-                    <img class="card-img" src="images/backend.jpg" alt="Room Photos" style="height:100%; width: 100%; display: block;" data-holder-rendered="true">
-                </div>
-            </div>
-        </div>
-    </div>
-    </div>
     <main role="main" class="container pt-4 _M03KA">
         <div class="row ">
             <div class="a_left min-margin ">
@@ -32,14 +33,11 @@
                     <div class="row m-0" style="max-height: 120px;">
                         <div class="p-3 pb-2">
                             <div class="ui_icon" style="display: flex;">
-                                <div class="ui-user" title="Edilson D Mucanze">
-                                    K
-                                </div>
+                                <div class="ui-user" title="Edilson D Mucanze">K</div>
                             </div>
                         </div>
                         <div class="rms_desc p-3 pb-2 pr-0 col-10">
-                                <div class="" style="font-weight: 600; color:#353535; padding-bottom: 0px !important; ">
-                                    República: Casa Assombrada
+                                <div class="" style="font-weight: 600; color:#353535; padding-bottom: 0px !important; ">República: Casa Assombrada
                                     <span class="pub-date" style="font-weight: 400; margin: 5px 1px 6px; line-height: none; background: none;">&nbsp;
                                         <span data-date="2018-11-29T09:52:01.171Z" class="date" title="November 29, 2018 11:52 AM">2 horas atras</span>
                                     </span>
@@ -354,51 +352,51 @@
                                 <div style="display: flex;">
                                     <div>Acomodacao</div>
                                     <div class="left-flex mr-4">
-                                        <span data-feather="star" class="icon-active"></span>
-                                        <span data-feather="star" class="icon-active"></span>
-                                        <span data-feather="star" class="icon-active"></span>
-                                        <span data-feather="star" class="icon-c"></span>
-                                        <span data-feather="star" class="icon-c"></span>
+                                        <star-icon class="icon-active"></star-icon>
+                                        <star-icon class="icon-active"></star-icon>
+                                        <star-icon class="icon-active"></star-icon>
+                                        <star-icon class="icon-c"></star-icon>
+                                        <star-icon class="icon-c"></star-icon>
                                     </div>
                                 </div>
                                 <div style="display: flex;">
                                     <div>Localizacao</div>
                                     <div class="left-flex mr-4">
-                                        <span data-feather="star" class="icon-active"></span>
-                                        <span data-feather="star" class="icon-active"></span>
-                                        <span data-feather="star" class="icon-active"></span>
-                                        <span data-feather="star" class="icon-active"></span>
-                                        <span data-feather="star" class="icon-c"></span>
+                                        <star-icon class="icon-active"></star-icon>
+                                        <star-icon class="icon-active"></star-icon>
+                                        <star-icon class="icon-active"></star-icon>
+                                        <star-icon class="icon-active"></star-icon>
+                                        <star-icon class="icon-c"></star-icon>
                                     </div>
                                 </div>
                                 <div style="display: flex;">
                                     <div>Seguranca</div>
                                     <div class="left-flex mr-4">
-                                        <span data-feather="star" class="icon-active"></span>
-                                        <span data-feather="star" class="icon-active"></span>
-                                        <span data-feather="star" class="icon-active"></span>
-                                        <span data-feather="star" class="icon-c"></span>
-                                        <span data-feather="star" class="icon-c"></span>
+                                        <star-icon class="icon-active"></star-icon>
+                                        <star-icon class="icon-active"></star-icon>
+                                        <star-icon class="icon-active"></star-icon>
+                                        <star-icon class="icon-c"></star-icon>
+                                        <star-icon class="icon-c"></star-icon>
                                     </div>
                                 </div>
                                 <div style="display: flex;">
                                     <div>Hospitalidade</div>
                                     <div class="left-flex mr-4">
-                                        <span data-feather="star" class="icon-active"></span>
-                                        <span data-feather="star" class="icon-active"></span>
-                                        <span data-feather="star" class="icon-c"></span>
-                                        <span data-feather="star" class="icon-c"></span>
-                                        <span data-feather="star" class="icon-c"></span>
+                                        <star-icon class="icon-active"></star-icon>
+                                        <star-icon class="icon-active"></star-icon>
+                                        <star-icon class="icon-active"></star-icon>
+                                        <star-icon class="icon-c"></star-icon>
+                                        <star-icon class="icon-c"></star-icon>
                                     </div>
                                 </div>
                                 <div style="display: flex;">
                                     <div>Politicas de Pagamento</div>
                                     <div class="left-flex mr-4">
-                                        <span data-feather="star" class="icon-active"></span>
-                                        <span data-feather="star" class="icon-c"></span>
-                                        <span data-feather="star" class="icon-c"></span>
-                                        <span data-feather="star" class="icon-c"></span>
-                                        <span data-feather="star" class="icon-c"></span>
+                                        <star-icon class="icon-active"></star-icon>
+                                        <star-icon class="icon-c"></star-icon>
+                                        <star-icon class="icon-c"></star-icon>
+                                        <star-icon class="icon-c"></star-icon>
+                                        <star-icon class="icon-c"></star-icon>
                                     </div>
                                 </div>
                             </div>
@@ -413,20 +411,20 @@
                             <div class="p-3">
                                 <div class="form-control border-0 rounded-text p-1 bg-light" style="height: 65px;">
                                     <div class="rounded-circle border like-bt">
-                                        <div class="icon-c" data-feather="heart"></div>
+                                        <heart-icon class="icon-c"></heart-icon>
                                     </div>
 
                                     <div class="flex-c-m pt-1">
                                         <div class="vew-likes icon-c-h">
-                                            <div><span data-feather="heart"></span>Likes</div>
+                                            <div><heart-icon></heart-icon>Likes</div>
                                             <div>155</div>
                                         </div>
                                         <div class="vew-likes icon-c-h">
-                                            <div><span data-feather="eye"></span>Views</div>
+                                            <div><eye-icon></eye-icon>Views</div>
                                             <div>154K</div>
                                         </div>
                                         <div class="vew-likes icon-c-h">
-                                            <div><span data-feather="bookmark"></span>Reservas</div>
+                                            <div><bookmark-icon></bookmark-icon>Reservas</div>
                                             <div>154K</div>
                                         </div>
                                     </div>
@@ -554,7 +552,7 @@
             <div class="flex-c-m" style="width: 100%">
                 <div class="col-5 p-0 flex-c-m" style="justify-content:flex-start !important">
                     <div class="rounded-circle border like-bt">
-                        <div class="icon-c" data-feather="heart"></div>
+                        <heart-icon class="icon-c"></heart-icon>
                     </div>
                     <div class="pl-2" style="text-align: center; justify-content: flex-start">
                         <div style="font-weight: 500"><span class="_nlikes">154</span> Gostos</div>
@@ -573,13 +571,23 @@
         </div>
     </div>
     <div id="nav_boolean" :class="const_nav"></div>
-    </div>
+</div>
 
 </template>
 
 <script type="text/javascript">
+import { EyeIcon } from 'vue-feather-icons'
+import { BookmarkIcon } from 'vue-feather-icons'
+import { HeartIcon } from 'vue-feather-icons'
+import { StarIcon } from 'vue-feather-icons'
 
     export default {
+        components: {
+            BookmarkIcon,
+            EyeIcon,
+            HeartIcon,
+            StarIcon
+        },
         props : ['const_nav'],
         mounted() {
             console.log('Room Component mounted.'),
@@ -588,22 +596,19 @@
 
         methods: {
             loaded: function () {
-                feather.replace();
                 $('.container-fluid').addClass('container').removeClass('container-fluid');
                 $('.nav-search-cont').css({
                     display:'none',
                     transition: 'display ease 300ms'
                     });
-            }
-        }
+            },
+        },
     }
 
-
-        $(document).ready(function () {
-
+    $(document).ready(function () {
             $(window).scroll(function (e) {
 
-                 var _anchora = $("._E03HM").offset().top;
+                var _anchora = $("._E03HM").offset().top;
 
                 if($(this).scrollTop() >= _anchora ){
                     $('.static').removeClass('a-fixed');
@@ -647,6 +652,5 @@
                 }
                 */
             });
-        });
-
-    </script>
+    });
+</script>

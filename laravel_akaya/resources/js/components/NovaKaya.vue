@@ -1,7 +1,7 @@
 <template>
     <div class="main_container" style="margin-top: 0px">
       <div class="row m-row m-0">
-        <div class="col-md-4 pt-4 pb-4 bg-white no-float" style="max-width: 480px;">
+        <div class="col-md-4 pt-4 pb-4 bg-white no-float" style="max-width: 360px;">
 
           <div class="p-3" style="text-align: justify">
             <div class="mb-3">
@@ -35,7 +35,7 @@
             <!-- Multi step form -->
             <div class="col-md-12 m-auto">
               <form action="#" >
-                <div class="row m-0 step-1" style="display:none">
+                <div v-if="step1" class="row m-0 step-1">
                   <div class="m-4 col-md-6 p-3" style="max-width: 500px;">
                     <h4 class="_text-bc">Onde o seu apartamento esta localizado?</h4>
                       <p class="text-muted"> Para começar vamos indicar onde o seu apartamento esta localizado..</p>
@@ -44,7 +44,7 @@
                         <div class="f-title mb-2" style="font-weight:500; text-transform:upercase">Pais</div>
                           <div>
                             <select name="pais" id="" class="custom-select d-block w-100 ng-binding" style="height: calc(2.75rem + 2px) !important;">
-                              <option value="Moz">Moz</option>
+                              <option value="Moçambique">Moçambique</option>
                             </select>
                           </div>
                       </div>
@@ -52,29 +52,30 @@
                         <div class="col-6 pl-0">
                           <div class="f-title mb-2" style="font-weight:500; text-transform:upercase">Provincia</div>
                           <div>
-                            <select v-model="provincia_id" name="prov" id="" class="custom-select d-block w-100 ng-binding" style="height: calc(2.75rem + 2px) !important;"  >
+                            <select v-model="provincia" name="prov" id="" class="custom-select d-block w-100 ng-binding" style="height: calc(2.75rem + 2px) !important;"  >
                               <option :value="null">Províncias...</option>
-                              <option :value=provincia.id v-for="provincia in provincias" :key="provincia.id">{{ provincia.nome }}</option>
+                              <option :value="provincia.nome" v-for="provincia in provincias" :key="provincia.id">{{ provincia.nome }}</option>
                             </select>
                           </div>
 
                         </div>
                         <div class="col-6 pl-0 pr-0">
                           <div class="f-title mb-2" style="font-weight:500; text-transform:upercase">Distrito</div>
-                          <select  v-model="distrito_id" name="distrito_id" id="" class="custom-select d-block w-100 ng-binding" style="height: calc(2.75rem + 2px) !important;">
-                            <option :value="null">Distritos...</option>
-                            <option :p_id="distrito.provincia_id" :value="distrito.id" v-for="distrito in distritos" :key="distrito.id">{{distrito.nome}}</option>
+                          <select  v-model="distrito" name="distrito_id" id="" class="custom-select d-block w-100 ng-binding" style="height: calc(2.75rem + 2px) !important;">
+                            <option v-if="!provincia" :value="null">Selecione a Província ...</option>
+                            <option v-if="provincia" :value="null">Distritos ({{filterDistritos.length}}) ...</option>
+                            <option v-if="provincia" :p_id="distrito.provincia_id" :value="distrito.nome" v-for="distrito in filterDistritos" :key="distrito.id">{{distrito.nome}}</option>
                           </select>
                         </div>
                       </div>
                       <div class="m-0">
                         <div class="col-12 mt-4 p-0">
-                          <div class="f-title text-muted mb-2" style="font-weight:500; text-transform:upercase">Selecione as faculdades</div>
-                          <p class="text-muted"> will only get your exact address once they’ve booked a reservation.</p>
+                          <div class="f-title text-muted mb-2" style="font-weight:500; text-transform:upercase">Selecione as universidades próximas</div>
+                          <p class="text-muted"> Ao indicar as universidades próximas do seu apartamento você ajuda o usuário a encontra-lo com maior facilidade.</p>
                           <div class="ms-shadow p-2 bg-white rounded" style="min-height:230px;">
 
-                              <div class="row m-0" v-for="universidade in universidades" :key="universidade.id" >
-                                <div class="custom-control custom-radio sel-l-opt" >
+                              <div class="row m-0" v-if="provincia" v-for="universidade in filterUniversidades" :key="universidade.id" >
+                                <div v-if="distrito" class="custom-control custom-radio sel-l-opt" >
                                   <input class="custom-control-input" type="checkbox" :id="universidade.id" :value="universidade.id">
                                   <label class="custom-control-label my-custom-label" :for="universidade.id">{{universidade.nome}}</label>
                                 </div>
@@ -83,13 +84,13 @@
                         </div>
 
                         <div class="col-12 mt-4 p-0">
-                          <div class="float-md-right"><button class="btn btn-primary">Continuar</button></div>
+                          <div class="float-md-right"><div class="btn btn-primary" v-on:click="toStep(2)">Continuar</div></div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="step-2 " style="display:none">
+                <div v-if="step2" class="step-2 ">
                   <div class="m-4 col-md-6 p-3" style="max-width: 500px;">
                     <h4 class="_text-bc">Tipo de apartamento</h4>
                     <p class="text-muted">Indique o tipo de casa na qual os estudantes serão hospedes.</p>
@@ -130,7 +131,7 @@
                             </div>
                             <div class="selection_options pl-4">
                               <div class="sl-op m-2 mb-3 p-1 custom-control custom-radio">
-                                <input type="radio"  class="custom-control-input" name="typeContador" id="typeContador1" value="condo">
+                                <input type="radio"  class="custom-control-input" v-model="typeContador" name="typeContador" id="typeContador1" value="3003">
                                 <label class="f-title custom-control-label" for="typeContador1">Contador Particular</label>
                                 <div class="sb-c-l text-muted">
                                   No contador particular, a gestão de compra e consumo de energia é com o hospede da casa.
@@ -138,7 +139,7 @@
                               </div>
 
                               <div class="sl-op m-2 mb-3 p-1 custom-control custom-radio">
-                                <input type="radio"  class="custom-control-input" name="typeContador" id="typeContador2" value="condo">
+                                <input type="radio"  class="custom-control-input" v-model="typeContador" name="typeContador" id="typeContador2" value="3030">
                                 <label class="f-title custom-control-label" for="typeContador2">Contador Compartilhado</label>
                                 <div class="sb-c-l text-muted">
                                   O contador é único (ou do condomínio), e gestão do consumo é com os hospedes do condomínio.
@@ -153,31 +154,34 @@
                             </div>
                             <div class="selection_options pl-4" style="margin-top:35px;">
                               <div class="sl-op m-2 mb-3 p-1 custom-control custom-radio">
-                                <input type="radio"  class="custom-control-input" name="aguaOption" id="aguaOption1" value="condo">
+                                <input type="radio"  class="custom-control-input" v-model="hostAgua" name="hostAgua" id="aguaOption1" value="3187">
                                 <label class="f-title custom-control-label" for="aguaOption1">No quintal</label>
                                 <div class="sb-c-l text-muted">
-                                  No contador particular, a gestão de compra e consumo de energia é com o hospede da casa.
+                                  No quintal onde esta localizado o apartamento tem água canalizada.
                                 </div>
                               </div>
 
                               <div class="sl-op m-2 mb-3 p-1 custom-control custom-radio">
-                                <input type="radio"  class="custom-control-input" name="aguaOption" id="aguaOption2" value="condo">
+                                <input type="radio"  class="custom-control-input" v-model="hostAgua" name="hostAgua" id="aguaOption2" value="8798">
                                 <label class="f-title custom-control-label" for="aguaOption2">Fácil Acesso</label>
                                 <div class="sb-c-l text-muted">
-                                  O contador é único (ou do condomínio), e gestão do consumo é com os hospedes do condomínio.
+                                  Não temos água canalizada mais é de fácil acesso no bairro.
                                 </div>
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                      <div class="col-12 mt-4 p-0" style="height:150px;">
-                        <div class="float-md-right"><button class="btn btn-primary">Continuar</button></div>
+                      <div class="col-12 mt-4 p-0" style="height:70px;">
+                        <div class="float-md-right">
+                          <div class="btn btn-outline-primary" v-on:click="toStep(1)">Voltar</div>
+                          <div class="btn btn-primary" v-on:click="toStep(3)">Continuar</div>
+                          </div>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="step-3" style="display:block">
+                <div v-if="step3" class="step-3">
                   <div class="m-4 col-md-6 p-3" style="max-width: 500px;">
                     <div class="card border-0 ms-shadow p-3">
                       <h4 class="_text-bc">Tipo de apartamento</h4>
@@ -187,31 +191,64 @@
                         <div class="mt-3">
                           <div class="f-title" style="font-weight:500; text-transform:upercase">Nome do Apartamento</div>
                           <p class="text-muted pb-1 m-0">Indique o tipo de casa na qual os estudantes serão hospedes.</p>
-                          <input type="text" name="nome_ap" id="inp-n-home" class="border-0 d-block w-100" placeholder="Nome do Apartamento">
+                          <input type="text" name="hostNome" v-model="hostNome" id="inp-n-home" class="border-0 d-block w-100" placeholder="Nome do Apartamento">
                         </div>
 
                         <div class="mt-3">
-                          <div class="f-title mb-2" style="font-weight:500; text-transform:upercase">Descrição do Apartamento <em>({{nota_Desc.length}}  up to a {{text_maxlength}} characters)</em></div>
+                          <div class="f-title mb-2" style="font-weight:500; text-transform:upercase">Apresentação do Apartamento <em>({{nota_Desc.length}}  up to a {{text_maxlength}} characters)</em></div>
                           <textarea id="textarea-home" v-model="nota_Desc" :maxlength="text_maxlength" class="border-0 w-100" placeholder="Digite..."></textarea>
-                          <p class="text-muted pt-2 pl-1 pr-1">A nota introdutória e uma apresentação sumaria da casa. note que ela e primeira informação que os usuários vão poder ver quando pesquisar sobre casas. <br> <b>Dica:</b> Seja criativo, e "Venda".</p>
+                          <p class="text-muted pt-2 pl-1 pr-1 border-top">Apresentação resumida da casa é primeira informação que os usuários vão poder ver quando pesquisarem sobre casas. Dica: seja objetivo. (Localização, Dimensões, Tipo de apartamento).</p>
                         </div>
                     </div>
                   </div>
-                  <div class="row m-5">
+                  <div class="row ml-5 mr-5 mt-2">
                     <div class="pt-3 border-top" style="max-width:740px;">
                       <div class="f-title mb-2" style="font-weight:500; text-transform:upercase">Descrição do Apartamento <em>(Seja criativo, e "Venda").</em></div>
-                      <textarea id="textarea-home" v-model="home_desc" class="border-0 w-100" placeholder="Digite..."></textarea>
-                      <p class="text-muted pt-2 pl-1 pr-1">A nota introdutória e uma apresentação sumaria da casa. note que ela e primeira informação que os usuários vão poder ver quando pesquisar sobre casas.</p>
-
-                      <div class="col-12 mt-4 p-0" style="height:150px;">
-                        <div class="float-md-right"><button class="btn btn-primary">Continuar</button></div>
+                      <div  class="mt-2">
+                        <InfoEditor v-model="sobre_casa"></InfoEditor>
+                      </div>
+                      <p class="text-muted pt-2 pl-1 pr-1">Fale um pouco mais sobre o apartamento, seu histórico, sobre os antigos moradores e que o seu cliente pode encontrar. False sobre as dimensões, e tudo que for relevante.</p>
+                      <div class="col-12 mt-4 p-0" style="height:70px;">
+                        <div class="float-md-right">
+                          <div class="btn btn-outline-primary" v-on:click="toStep(2)">Voltar</div>
+                          <div class="btn btn-primary" v-on:click="toStep(4)">Continuar</div>
+                          </div>
                       </div>
                     </div>
                   </div>
 
                 </div>
-                <div class="step-4" style="display:none">
-                  a
+                <div v-if="step4" class="step-4">
+                  <div class="m-4 col-md-6 p-3" style="max-width: 500px;">
+                    <div class="card border-0 ms-shadow p-3">
+                      <h4 class="_text-bc">Tipo de apartamento</h4>
+                      <p class="text-muted">Indique o tipo de casa na qual os estudantes serão hospedes.</p>
+                    </div>
+
+                    <div>
+
+                    </div>
+
+                    <div class="col-12 mb-4 mt-4 p-0">
+                      <div class="float-md-right">
+                      <div class="btn btn-outline-primary" v-on:click="toStep(3)">Voltar</div>
+                      <div class="btn btn-primary" v-on:click="toStep(4)">Continuar</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div  v-if="errors.length" class="error" style="max-width: 500px;">
+                  <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>Error!</strong> Você deve verificar alguns desses campos abaixo.
+                    <hr>
+                    <ul>
+                      <li v-for="error in errors" :key="error">{{ error }}</li>
+                    </ul>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
                 </div>
               </form>
             </div>
@@ -236,6 +273,18 @@
     }
 
   #textarea-home{
+    font-family: -apple-system,BlinkMacSystemFont,"Roboto",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol" !important;
+    min-height: 150px;
+    max-height: 150px;
+    background: none;
+    font-size: 1.3rem;
+    color: #383838;
+    font-weight: 400;
+    line-height: 1.50;
+    letter-spacing: .006em;
+  }
+
+  .ProseMirror-custom{
     font-family: -apple-system,BlinkMacSystemFont,"Roboto",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol" !important;
     min-height: 150px;
     max-height: 150px;
@@ -303,18 +352,35 @@ html,body,.main_container {
     }
 </style>
 
-
 <script>
 import Vue from 'vue';
 import axios from 'axios';
+import InfoEditor from '@/js/components/InfoEditor';
+import { Editor, EditorContent } from 'tiptap';
+import { EyeIcon } from 'vue-feather-icons'
+import { BookmarkIcon } from 'vue-feather-icons'
+import { HeartIcon } from 'vue-feather-icons'
+import { CameraIcon } from 'vue-feather-icons'
 
 export default {
+        components: {
+          EditorContent,
+          InfoEditor,
+          EyeIcon,
+          BookmarkIcon,
+          HeartIcon,
+          CameraIcon
+        },
         props : ['const_nav', 'id'],
         mounted() {
             console.log('NovaKaya Component mounted.'),
-            this.loaded()
+            this.loaded(),
+            this.editor = new Editor({
+            })
         },
-
+        beforeDestroy() {
+          this.editor.destroy()
+        },
         created() {
           this.getProvincias(),
           this.getUniversidade(),
@@ -324,12 +390,26 @@ export default {
         data() {
             return {
               // Variaveis
+              step1: true,
+              step2: false,
+              step3: false,
+              step4: false,
               text_maxlength: 140,
-              nota_Desc: '',
               provincia_id: null,
               distrito_id:null,
               addFade:'my-fade',
+              //Info Apartamento
+              pais: null,
+              provincia: null,
+              distrito: null,
               hostType: null,
+              typeContador: null,
+              hostAgua: null,
+              hostNome: null,
+              nota_Desc: '',
+              sobre_casa:'',
+              // Error
+              errors: [],
               //EndPoints
               provincias: [],
               provs_endpoint: '/api/kaya/data/provincias/',
@@ -343,7 +423,67 @@ export default {
         },
 
         methods: {
+            toStep(step){
+              this.errors = [];
+              switch (step) {
+                case 1:
+                  if (!this.errors.length) {
+                    this.step1 = true;
+                    this.step2 = false;
+                    this.step3 = false;
+                    this.step4 = false;
+                  }
+                  break;
+                case 2:
+
+                  if (!this.provincia) {
+                    this.errors.push("Província required.");
+                  }
+                  if (!this.distrito) {
+                    this.errors.push("Distrito required.");
+                  }
+                  if(!this.errors.length){
+                    this.step1 = false;
+                    this.step2 = true;
+                    this.step3 = false;
+                    this.step4 = false;
+                  }
+                  break;
+                case 3:
+                  if (!this.hostType) {
+                    this.errors.push("Tipo de Apartamento required.");
+                  }
+                  if (!this.typeContador) {
+                    this.errors.push("Tipo de contador required.");
+                  }
+                  if (!this.hostAgua) {
+                    this.errors.push("Acesso a Água required.");
+                  }if(!this.errors.length){
+                    this.step1 = false;
+                    this.step2 = false;
+                    this.step3 = true;
+                    this.step4 = false;
+                  }
+                  break;
+                case 4:
+                  if (!this.hostNome) {
+                    this.errors.push("Nome do Apartamento required.");
+                  }
+                  if (!this.nota_Desc) {
+                    this.errors.push("Apresentação do Apartamento required.");
+                  }if(!this.errors.length){
+                    this.step1 = false;
+                    this.step2 = false;
+                    this.step3 = false;
+                    this.step4 = true;
+                  }
+                  break;
+                default:
+                  break;
+              }
+            },
             loaded: function () {
+
               $('.navbar').removeClass('nav-menu_show').removeClass('bg-wihte-op');
               $('.container').addClass('container-fluid').removeClass('container');
               $('.nav-search-cont').css({display:'none'});
@@ -377,6 +517,38 @@ export default {
                     console.log("------ Error on Load Universidades------")
                 })
             }
+        },
+
+        computed:{
+          filterDistritos(){
+             let distritos = this.distritos
+             if(distritos.length){
+               if(this.provincia){
+                  this.distrito = null
+                  distritos = distritos.filter((p) => {
+                  return p.provincia.indexOf(this.provincia) !== -1
+                })
+              }if(!this.provincia){
+                this.distrito = null
+              }
+              return distritos
+             }else{
+               return "Loading Distritos";
+             }
+          },
+          filterUniversidades(){
+             let universidades = this.universidades
+             if(universidades.length){
+               if(this.distrito){
+                  universidades = universidades.filter((p) => {
+                  return p.distrito.indexOf(this.distrito) !== -1
+                })
+              }
+              return universidades
+             }else{
+               return "Loading Distritos";
+             }
+          }
         }
 
     }

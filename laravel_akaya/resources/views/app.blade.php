@@ -49,59 +49,7 @@
     <!--===============================================================================================-->
      <!-- My Scripts -->
     <script src="{{asset ('js/main.js')}}"></script>
-
-    <!-- Icons -->
-    <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
-    <script src="{{ asset('css/icons/feather.min.js') }}"></script>
-
-
-    <script>
-        function run_script(){
-             if($('#nav_boolean').hasClass("_rooms")){
-                $('.container').addClass('container-fluid').removeClass('container');
-                $('.nav-search-cont').css({
-                    display:'block',
-                    transition: 'display ease 300ms'});
-
-             }else if($('#nav_boolean').hasClass("_room")){
-
-                $('.container-fluid').addClass('container').removeClass('container-fluid');
-                $('.nav-search-cont').css({
-                    display:'none',
-                    transition: 'display ease 300ms'
-                    });
-
-             }else if($('#nav_boolean').hasClass("_kaya")){
-
-                $('.container').addClass('container-fluid').removeClass('container');
-                $('.nav-search-cont').css({display:'none'});
-
-             }else{
-                alert('else');
-             }
-        }
-    </script>
-
-
-    <script>
-
-        function run_icons(){
-            feather.replace();
-        }
-
-        function c_nav(){
-             feather.replace();
-                if($('#nav_boolean').hasClass("_s-cont")){
-                    $('.container-fluid').addClass('container').removeClass('container-fluid');
-                    $('container').removeClass('container-fluid');
-                    $('.nav-search-cont').css({display:'none'});
-                }else{
-                    $('container').addClass('container-fluid').removeClass('container');
-                    $('.container-fluid').removeClass('container');
-                    $('.nav-search-cont').css({display:'block'});
-                };
-            };
-
+<script>
         $(document).ready(function(){
             // Nav Menu functions
             if($('#nav_boolean').hasClass("_rooms")){

@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Provincias;
 use App\Http\Resources\ProvinciaResource;
-
+use App\Models\Distritos;
+use App\Http\Resources\DistritoResource;
 class ProvinciaController extends Controller
 {
     /**
@@ -66,6 +67,21 @@ class ProvinciaController extends Controller
         //
         $provincia = Provincias::findOrfail($id);
         return new ProvinciaResource($provincia);
+    }
+
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Provincias  $provincia
+     * @return \Illuminate\Http\Response
+     */
+    public function showDistritos($id)
+    {
+        //
+        $distritos = Distritos::get()->where('provincias_id', '=', 3);
+        return DistritoResource::collection($distritos);
+
     }
 
     /**
