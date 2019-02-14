@@ -2582,6 +2582,46 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -2599,7 +2639,7 @@ __webpack_require__.r(__webpack_exports__);
     HeartIcon: vue_feather_icons__WEBPACK_IMPORTED_MODULE_4__["HeartIcon"],
     CameraIcon: vue_feather_icons__WEBPACK_IMPORTED_MODULE_4__["CameraIcon"]
   },
-  props: ['const_nav', 'id'],
+  props: ['const_nav'],
   mounted: function mounted() {
     console.log('NovaKaya Component mounted.'), this.loaded(), this.editor = new tiptap__WEBPACK_IMPORTED_MODULE_3__["Editor"]({});
   },
@@ -2612,10 +2652,10 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       // Variaveis
-      step1: true,
+      step1: false,
       step2: false,
       step3: false,
-      step4: false,
+      step4: true,
       text_maxlength: 140,
       provincia_id: null,
       distrito_id: null,
@@ -2630,6 +2670,8 @@ __webpack_require__.r(__webpack_exports__);
       hostNome: null,
       nota_Desc: '',
       sobre_casa: '',
+      // Fotos da casa
+      fotos_Kaya: [],
       // Error
       errors: [],
       //EndPoints
@@ -2690,7 +2732,7 @@ __webpack_require__.r(__webpack_exports__);
           }
 
           if (!this.errors.length) {
-            this.step1 = false;
+            this.step1 = true;
             this.step2 = false;
             this.step3 = true;
             this.step4 = false;
@@ -2755,11 +2797,59 @@ __webpack_require__.r(__webpack_exports__);
       }).catch(function (error) {
         console.log("------ Error on Load Universidades------");
       });
+    },
+    // Uploader fotos
+    fotokaya: function fotokaya(e) {
+      var fotos = e.target.files;
+      var num_fotos = fotos.length;
+
+      if (this.fotos_Kaya.length < 5) {
+        if (num_fotos + this.fotos_Kaya.length > 5) {
+          this.errors.push("Maximo 5 Fotos");
+        } else {
+          if (num_fotos < 6) {
+            for (var i = 0; i < num_fotos; i++) {
+              this.loadFotos(fotos[i]);
+            }
+          } else {
+            this.errors.push("Maximo 5 Fotos");
+          }
+        }
+      } else {
+        this.errors.push("Maximo 5 Fotos");
+      }
+    },
+    // Load Fotos
+    loadFotos: function loadFotos(foto) {
+      var _this4 = this;
+
+      var reader = new FileReader();
+      reader.readAsDataURL(foto);
+      var fotoNameObj = new Object();
+      fotoNameObj.file_name = foto.name;
+
+      reader.onload = function () {
+        var fotoObj = new Object();
+        fotoObj = {
+          file_name: foto.name,
+          data_img_url: reader.result
+        };
+
+        _this4.fotos_Kaya.push(fotoObj);
+      };
+    },
+    removeFoto: function removeFoto(foto) {
+      // Remove Foto
+      this.fotos_Kaya.splice(this.fotos_Kaya.indexOf(foto), 1);
+    },
+    // Sumit form
+    onSubmitKaya: function onSubmitKaya(e) {
+      console.log(e);
     }
   },
   computed: {
     filterDistritos: function filterDistritos() {
-      var _this4 = this;
+      var _this5 = this;
 
       var distritos = this.distritos;
 
@@ -2767,7 +2857,7 @@ __webpack_require__.r(__webpack_exports__);
         if (this.provincia) {
           this.distrito = null;
           distritos = distritos.filter(function (p) {
-            return p.provincia.indexOf(_this4.provincia) !== -1;
+            return p.provincia.indexOf(_this5.provincia) !== -1;
           });
         }
 
@@ -2781,14 +2871,14 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     filterUniversidades: function filterUniversidades() {
-      var _this5 = this;
+      var _this6 = this;
 
       var universidades = this.universidades;
 
       if (universidades.length) {
         if (this.distrito) {
           universidades = universidades.filter(function (p) {
-            return p.distrito.indexOf(_this5.distrito) !== -1;
+            return p.distrito.indexOf(_this6.distrito) !== -1;
           });
         }
 
@@ -37423,7 +37513,7 @@ module.exports = OrderedMap
 __webpack_require__.r(__webpack_exports__);
 /* WEBPACK VAR INJECTION */(function(global) {/**!
  * @fileOverview Kickass library to create and place poppers near their reference elements.
- * @version 1.14.6
+ * @version 1.11.0
  * @license
  * Copyright (c) 2016 Federico Zivolo and contributors
  *
@@ -37445,8 +37535,22 @@ __webpack_require__.r(__webpack_exports__);
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-var isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined';
+var nativeHints = ['native code', '[object MutationObserverConstructor]'];
 
+/**
+ * Determine if a function is implemented natively (as opposed to a polyfill).
+ * @method
+ * @memberof Popper.Utils
+ * @argument {Function | undefined} fn the function to check
+ * @returns {Boolean}
+ */
+var isNative = (function (fn) {
+  return nativeHints.some(function (hint) {
+    return (fn || '').toString().indexOf(hint) > -1;
+  });
+});
+
+var isBrowser = typeof window !== 'undefined';
 var longerTimeoutBrowsers = ['Edge', 'Trident', 'Firefox'];
 var timeoutDuration = 0;
 for (var i = 0; i < longerTimeoutBrowsers.length; i += 1) {
@@ -37457,16 +37561,26 @@ for (var i = 0; i < longerTimeoutBrowsers.length; i += 1) {
 }
 
 function microtaskDebounce(fn) {
-  var called = false;
+  var scheduled = false;
+  var i = 0;
+  var elem = document.createElement('span');
+
+  // MutationObserver provides a mechanism for scheduling microtasks, which
+  // are scheduled *before* the next task. This gives us a way to debounce
+  // a function but ensure it's called *before* the next paint.
+  var observer = new MutationObserver(function () {
+    fn();
+    scheduled = false;
+  });
+
+  observer.observe(elem, { attributes: true });
+
   return function () {
-    if (called) {
-      return;
+    if (!scheduled) {
+      scheduled = true;
+      elem.setAttribute('x-index', i);
+      i = i + 1; // don't use compund (+=) because it doesn't get optimized in V8
     }
-    called = true;
-    window.Promise.resolve().then(function () {
-      called = false;
-      fn();
-    });
   };
 }
 
@@ -37483,7 +37597,11 @@ function taskDebounce(fn) {
   };
 }
 
-var supportsMicroTasks = isBrowser && window.Promise;
+// It's common for MutationObserver polyfills to be seen in the wild, however
+// these rely on Mutation Events which only occur when an element is connected
+// to the DOM. The algorithm used in this module does not use a connected element,
+// and so we must ensure that a *native* MutationObserver is available.
+var supportsNativeMutationObserver = isBrowser && isNative(window.MutationObserver);
 
 /**
 * Create a debounced version of a method, that's asynchronously deferred
@@ -37494,7 +37612,7 @@ var supportsMicroTasks = isBrowser && window.Promise;
 * @argument {Function} fn
 * @returns {Function}
 */
-var debounce = supportsMicroTasks ? microtaskDebounce : taskDebounce;
+var debounce = supportsNativeMutationObserver ? microtaskDebounce : taskDebounce;
 
 /**
  * Check if the given variable is a function
@@ -37520,7 +37638,6 @@ function getStyleComputedProperty(element, property) {
     return [];
   }
   // NOTE: 1 DOM access here
-  var window = element.ownerDocument.defaultView;
   var css = window.getComputedStyle(element, null);
   return property ? css[property] : css;
 }
@@ -37548,16 +37665,8 @@ function getParentNode(element) {
  */
 function getScrollParent(element) {
   // Return body, `getScroll` will take care to get the correct `scrollTop` from it
-  if (!element) {
-    return document.body;
-  }
-
-  switch (element.nodeName) {
-    case 'HTML':
-    case 'BODY':
-      return element.ownerDocument.body;
-    case '#document':
-      return element.body;
+  if (!element || ['HTML', 'BODY', '#document'].indexOf(element.nodeName) !== -1) {
+    return window.document.body;
   }
 
   // Firefox want us to check `-x` and `-y` variations as well
@@ -37567,31 +37676,11 @@ function getScrollParent(element) {
       overflowX = _getStyleComputedProp.overflowX,
       overflowY = _getStyleComputedProp.overflowY;
 
-  if (/(auto|scroll|overlay)/.test(overflow + overflowY + overflowX)) {
+  if (/(auto|scroll)/.test(overflow + overflowY + overflowX)) {
     return element;
   }
 
   return getScrollParent(getParentNode(element));
-}
-
-var isIE11 = isBrowser && !!(window.MSInputMethodContext && document.documentMode);
-var isIE10 = isBrowser && /MSIE 10/.test(navigator.userAgent);
-
-/**
- * Determines if the browser is Internet Explorer
- * @method
- * @memberof Popper.Utils
- * @param {Number} version to check
- * @returns {Boolean} isIE
- */
-function isIE(version) {
-  if (version === 11) {
-    return isIE11;
-  }
-  if (version === 10) {
-    return isIE10;
-  }
-  return isIE11 || isIE10;
 }
 
 /**
@@ -37602,28 +37691,17 @@ function isIE(version) {
  * @returns {Element} offset parent
  */
 function getOffsetParent(element) {
-  if (!element) {
-    return document.documentElement;
-  }
-
-  var noOffsetParent = isIE(10) ? document.body : null;
-
   // NOTE: 1 DOM access here
-  var offsetParent = element.offsetParent || null;
-  // Skip hidden elements which don't have an offsetParent
-  while (offsetParent === noOffsetParent && element.nextElementSibling) {
-    offsetParent = (element = element.nextElementSibling).offsetParent;
-  }
-
+  var offsetParent = element && element.offsetParent;
   var nodeName = offsetParent && offsetParent.nodeName;
 
   if (!nodeName || nodeName === 'BODY' || nodeName === 'HTML') {
-    return element ? element.ownerDocument.documentElement : document.documentElement;
+    return window.document.documentElement;
   }
 
-  // .offsetParent will return the closest TH, TD or TABLE in case
+  // .offsetParent will return the closest TD or TABLE in case
   // no offsetParent is present, I hate this job...
-  if (['TH', 'TD', 'TABLE'].indexOf(offsetParent.nodeName) !== -1 && getStyleComputedProperty(offsetParent, 'position') === 'static') {
+  if (['TD', 'TABLE'].indexOf(offsetParent.nodeName) !== -1 && getStyleComputedProperty(offsetParent, 'position') === 'static') {
     return getOffsetParent(offsetParent);
   }
 
@@ -37665,7 +37743,7 @@ function getRoot(node) {
 function findCommonOffsetParent(element1, element2) {
   // This check is needed to avoid errors in case one of the elements isn't defined for any reason
   if (!element1 || !element1.nodeType || !element2 || !element2.nodeType) {
-    return document.documentElement;
+    return window.document.documentElement;
   }
 
   // Here we make sure to give as "start" the element that comes first in the DOM
@@ -37713,8 +37791,8 @@ function getScroll(element) {
   var nodeName = element.nodeName;
 
   if (nodeName === 'BODY' || nodeName === 'HTML') {
-    var html = element.ownerDocument.documentElement;
-    var scrollingElement = element.ownerDocument.scrollingElement || html;
+    var html = window.document.documentElement;
+    var scrollingElement = window.document.scrollingElement || html;
     return scrollingElement[upperSide];
   }
 
@@ -37757,17 +37835,32 @@ function getBordersSize(styles, axis) {
   var sideA = axis === 'x' ? 'Left' : 'Top';
   var sideB = sideA === 'Left' ? 'Right' : 'Bottom';
 
-  return parseFloat(styles['border' + sideA + 'Width'], 10) + parseFloat(styles['border' + sideB + 'Width'], 10);
+  return +styles['border' + sideA + 'Width'].split('px')[0] + +styles['border' + sideB + 'Width'].split('px')[0];
 }
+
+/**
+ * Tells if you are running Internet Explorer 10
+ * @method
+ * @memberof Popper.Utils
+ * @returns {Boolean} isIE10
+ */
+var isIE10 = undefined;
+
+var isIE10$1 = function () {
+  if (isIE10 === undefined) {
+    isIE10 = navigator.appVersion.indexOf('MSIE 10') !== -1;
+  }
+  return isIE10;
+};
 
 function getSize(axis, body, html, computedStyle) {
-  return Math.max(body['offset' + axis], body['scroll' + axis], html['client' + axis], html['offset' + axis], html['scroll' + axis], isIE(10) ? parseInt(html['offset' + axis]) + parseInt(computedStyle['margin' + (axis === 'Height' ? 'Top' : 'Left')]) + parseInt(computedStyle['margin' + (axis === 'Height' ? 'Bottom' : 'Right')]) : 0);
+  return Math.max(body['offset' + axis], html['client' + axis], html['offset' + axis], isIE10$1() ? html['offset' + axis] + computedStyle['margin' + (axis === 'Height' ? 'Top' : 'Left')] + computedStyle['margin' + (axis === 'Height' ? 'Bottom' : 'Right')] : 0);
 }
 
-function getWindowSizes(document) {
-  var body = document.body;
-  var html = document.documentElement;
-  var computedStyle = isIE(10) && getComputedStyle(html);
+function getWindowSizes() {
+  var body = window.document.body;
+  var html = window.document.documentElement;
+  var computedStyle = isIE10$1() && window.getComputedStyle(html);
 
   return {
     height: getSize('Height', body, html, computedStyle),
@@ -37859,8 +37952,8 @@ function getBoundingClientRect(element) {
   // IE10 10 FIX: Please, don't ask, the element isn't
   // considered in DOM in some circumstances...
   // This isn't reproducible in IE10 compatibility mode of IE11
-  try {
-    if (isIE(10)) {
+  if (isIE10$1()) {
+    try {
       rect = element.getBoundingClientRect();
       var scrollTop = getScroll(element, 'top');
       var scrollLeft = getScroll(element, 'left');
@@ -37868,10 +37961,10 @@ function getBoundingClientRect(element) {
       rect.left += scrollLeft;
       rect.bottom += scrollTop;
       rect.right += scrollLeft;
-    } else {
-      rect = element.getBoundingClientRect();
-    }
-  } catch (e) {}
+    } catch (err) {}
+  } else {
+    rect = element.getBoundingClientRect();
+  }
 
   var result = {
     left: rect.left,
@@ -37881,7 +37974,7 @@ function getBoundingClientRect(element) {
   };
 
   // subtract scrollbar size from sizes
-  var sizes = element.nodeName === 'HTML' ? getWindowSizes(element.ownerDocument) : {};
+  var sizes = element.nodeName === 'HTML' ? getWindowSizes() : {};
   var width = sizes.width || element.clientWidth || result.right - result.left;
   var height = sizes.height || element.clientHeight || result.bottom - result.top;
 
@@ -37903,23 +37996,16 @@ function getBoundingClientRect(element) {
 }
 
 function getOffsetRectRelativeToArbitraryNode(children, parent) {
-  var fixedPosition = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-
-  var isIE10 = isIE(10);
+  var isIE10 = isIE10$1();
   var isHTML = parent.nodeName === 'HTML';
   var childrenRect = getBoundingClientRect(children);
   var parentRect = getBoundingClientRect(parent);
   var scrollParent = getScrollParent(children);
 
   var styles = getStyleComputedProperty(parent);
-  var borderTopWidth = parseFloat(styles.borderTopWidth, 10);
-  var borderLeftWidth = parseFloat(styles.borderLeftWidth, 10);
+  var borderTopWidth = +styles.borderTopWidth.split('px')[0];
+  var borderLeftWidth = +styles.borderLeftWidth.split('px')[0];
 
-  // In cases where the parent is fixed, we must ignore negative scroll in offset calc
-  if (fixedPosition && isHTML) {
-    parentRect.top = Math.max(parentRect.top, 0);
-    parentRect.left = Math.max(parentRect.left, 0);
-  }
   var offsets = getClientRect({
     top: childrenRect.top - parentRect.top - borderTopWidth,
     left: childrenRect.left - parentRect.left - borderLeftWidth,
@@ -37934,8 +38020,8 @@ function getOffsetRectRelativeToArbitraryNode(children, parent) {
   // differently when margins are applied to it. The margins are included in
   // the box of the documentElement, in the other cases not.
   if (!isIE10 && isHTML) {
-    var marginTop = parseFloat(styles.marginTop, 10);
-    var marginLeft = parseFloat(styles.marginLeft, 10);
+    var marginTop = +styles.marginTop.split('px')[0];
+    var marginLeft = +styles.marginLeft.split('px')[0];
 
     offsets.top -= borderTopWidth - marginTop;
     offsets.bottom -= borderTopWidth - marginTop;
@@ -37947,7 +38033,7 @@ function getOffsetRectRelativeToArbitraryNode(children, parent) {
     offsets.marginLeft = marginLeft;
   }
 
-  if (isIE10 && !fixedPosition ? parent.contains(scrollParent) : parent === scrollParent && scrollParent.nodeName !== 'BODY') {
+  if (isIE10 ? parent.contains(scrollParent) : parent === scrollParent && scrollParent.nodeName !== 'BODY') {
     offsets = includeScroll(offsets, parent);
   }
 
@@ -37955,15 +38041,13 @@ function getOffsetRectRelativeToArbitraryNode(children, parent) {
 }
 
 function getViewportOffsetRectRelativeToArtbitraryNode(element) {
-  var excludeScroll = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-
-  var html = element.ownerDocument.documentElement;
+  var html = window.document.documentElement;
   var relativeOffset = getOffsetRectRelativeToArbitraryNode(element, html);
   var width = Math.max(html.clientWidth, window.innerWidth || 0);
   var height = Math.max(html.clientHeight, window.innerHeight || 0);
 
-  var scrollTop = !excludeScroll ? getScroll(html) : 0;
-  var scrollLeft = !excludeScroll ? getScroll(html, 'left') : 0;
+  var scrollTop = getScroll(html);
+  var scrollLeft = getScroll(html, 'left');
 
   var offset = {
     top: scrollTop - relativeOffset.top + relativeOffset.marginTop,
@@ -37995,26 +38079,6 @@ function isFixed(element) {
 }
 
 /**
- * Finds the first parent of an element that has a transformed property defined
- * @method
- * @memberof Popper.Utils
- * @argument {Element} element
- * @returns {Element} first transformed parent or documentElement
- */
-
-function getFixedPositionOffsetParent(element) {
-  // This check is needed to avoid errors in case one of the elements isn't defined for any reason
-  if (!element || !element.parentElement || isIE()) {
-    return document.documentElement;
-  }
-  var el = element.parentElement;
-  while (el && getStyleComputedProperty(el, 'transform') === 'none') {
-    el = el.parentElement;
-  }
-  return el || document.documentElement;
-}
-
-/**
  * Computed the boundaries limits and return them
  * @method
  * @memberof Popper.Utils
@@ -38022,39 +38086,35 @@ function getFixedPositionOffsetParent(element) {
  * @param {HTMLElement} reference
  * @param {number} padding
  * @param {HTMLElement} boundariesElement - Element used to define the boundaries
- * @param {Boolean} fixedPosition - Is in fixed position mode
  * @returns {Object} Coordinates of the boundaries
  */
 function getBoundaries(popper, reference, padding, boundariesElement) {
-  var fixedPosition = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
-
   // NOTE: 1 DOM access here
-
   var boundaries = { top: 0, left: 0 };
-  var offsetParent = fixedPosition ? getFixedPositionOffsetParent(popper) : findCommonOffsetParent(popper, reference);
+  var offsetParent = findCommonOffsetParent(popper, reference);
 
   // Handle viewport case
   if (boundariesElement === 'viewport') {
-    boundaries = getViewportOffsetRectRelativeToArtbitraryNode(offsetParent, fixedPosition);
+    boundaries = getViewportOffsetRectRelativeToArtbitraryNode(offsetParent);
   } else {
     // Handle other cases based on DOM element used as boundaries
     var boundariesNode = void 0;
     if (boundariesElement === 'scrollParent') {
-      boundariesNode = getScrollParent(getParentNode(reference));
+      boundariesNode = getScrollParent(getParentNode(popper));
       if (boundariesNode.nodeName === 'BODY') {
-        boundariesNode = popper.ownerDocument.documentElement;
+        boundariesNode = window.document.documentElement;
       }
     } else if (boundariesElement === 'window') {
-      boundariesNode = popper.ownerDocument.documentElement;
+      boundariesNode = window.document.documentElement;
     } else {
       boundariesNode = boundariesElement;
     }
 
-    var offsets = getOffsetRectRelativeToArbitraryNode(boundariesNode, offsetParent, fixedPosition);
+    var offsets = getOffsetRectRelativeToArbitraryNode(boundariesNode, offsetParent);
 
     // In case of HTML, we need a different computation
     if (boundariesNode.nodeName === 'HTML' && !isFixed(offsetParent)) {
-      var _getWindowSizes = getWindowSizes(popper.ownerDocument),
+      var _getWindowSizes = getWindowSizes(),
           height = _getWindowSizes.height,
           width = _getWindowSizes.width;
 
@@ -38069,12 +38129,10 @@ function getBoundaries(popper, reference, padding, boundariesElement) {
   }
 
   // Add paddings
-  padding = padding || 0;
-  var isPaddingNumber = typeof padding === 'number';
-  boundaries.left += isPaddingNumber ? padding : padding.left || 0;
-  boundaries.top += isPaddingNumber ? padding : padding.top || 0;
-  boundaries.right -= isPaddingNumber ? padding : padding.right || 0;
-  boundaries.bottom -= isPaddingNumber ? padding : padding.bottom || 0;
+  boundaries.left += padding;
+  boundaries.top += padding;
+  boundaries.right -= padding;
+  boundaries.bottom -= padding;
 
   return boundaries;
 }
@@ -38153,14 +38211,11 @@ function computeAutoPlacement(placement, refRect, popper, reference, boundariesE
  * @param {Object} state
  * @param {Element} popper - the popper element
  * @param {Element} reference - the reference element (the popper will be relative to this)
- * @param {Element} fixedPosition - is in fixed position mode
  * @returns {Object} An object containing the offsets which will be applied to the popper
  */
 function getReferenceOffsets(state, popper, reference) {
-  var fixedPosition = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
-
-  var commonOffsetParent = fixedPosition ? getFixedPositionOffsetParent(popper) : findCommonOffsetParent(popper, reference);
-  return getOffsetRectRelativeToArbitraryNode(reference, commonOffsetParent, fixedPosition);
+  var commonOffsetParent = findCommonOffsetParent(popper, reference);
+  return getOffsetRectRelativeToArbitraryNode(reference, commonOffsetParent);
 }
 
 /**
@@ -38171,10 +38226,9 @@ function getReferenceOffsets(state, popper, reference) {
  * @returns {Object} object containing width and height properties
  */
 function getOuterSizes(element) {
-  var window = element.ownerDocument.defaultView;
   var styles = window.getComputedStyle(element);
-  var x = parseFloat(styles.marginTop || 0) + parseFloat(styles.marginBottom || 0);
-  var y = parseFloat(styles.marginLeft || 0) + parseFloat(styles.marginRight || 0);
+  var x = parseFloat(styles.marginTop) + parseFloat(styles.marginBottom);
+  var y = parseFloat(styles.marginLeft) + parseFloat(styles.marginRight);
   var result = {
     width: element.offsetWidth + y,
     height: element.offsetHeight + x
@@ -38292,11 +38346,10 @@ function runModifiers(modifiers, data, ends) {
   var modifiersToRun = ends === undefined ? modifiers : modifiers.slice(0, findIndex(modifiers, 'name', ends));
 
   modifiersToRun.forEach(function (modifier) {
-    if (modifier['function']) {
-      // eslint-disable-line dot-notation
+    if (modifier.function) {
       console.warn('`modifier.function` is deprecated, use `modifier.fn`!');
     }
-    var fn = modifier['function'] || modifier.fn; // eslint-disable-line dot-notation
+    var fn = modifier.function || modifier.fn;
     if (modifier.enabled && isFunction(fn)) {
       // Add properties to offsets to make them a complete clientRect object
       // we do this before each modifier to make sure the previous one doesn't
@@ -38327,14 +38380,13 @@ function update() {
   var data = {
     instance: this,
     styles: {},
-    arrowStyles: {},
     attributes: {},
     flipped: false,
     offsets: {}
   };
 
   // compute reference element offsets
-  data.offsets.reference = getReferenceOffsets(this.state, this.popper, this.reference, this.options.positionFixed);
+  data.offsets.reference = getReferenceOffsets(this.state, this.popper, this.reference);
 
   // compute auto placement, store placement inside the data object,
   // modifiers will be able to edit `placement` if needed
@@ -38344,12 +38396,9 @@ function update() {
   // store the computed placement inside `originalPlacement`
   data.originalPlacement = data.placement;
 
-  data.positionFixed = this.options.positionFixed;
-
   // compute the popper offsets
   data.offsets.popper = getPopperOffsets(this.popper, data.offsets.reference, data.placement);
-
-  data.offsets.popper.position = this.options.positionFixed ? 'fixed' : 'absolute';
+  data.offsets.popper.position = 'absolute';
 
   // run the modifiers
   data = runModifiers(this.modifiers, data);
@@ -38389,10 +38438,10 @@ function getSupportedPropertyName(property) {
   var prefixes = [false, 'ms', 'Webkit', 'Moz', 'O'];
   var upperProp = property.charAt(0).toUpperCase() + property.slice(1);
 
-  for (var i = 0; i < prefixes.length; i++) {
+  for (var i = 0; i < prefixes.length - 1; i++) {
     var prefix = prefixes[i];
     var toCheck = prefix ? '' + prefix + upperProp : property;
-    if (typeof document.body.style[toCheck] !== 'undefined') {
+    if (typeof window.document.body.style[toCheck] !== 'undefined') {
       return toCheck;
     }
   }
@@ -38400,7 +38449,7 @@ function getSupportedPropertyName(property) {
 }
 
 /**
- * Destroys the popper.
+ * Destroy the popper
  * @method
  * @memberof Popper
  */
@@ -38410,12 +38459,9 @@ function destroy() {
   // touch DOM only if `applyStyle` modifier is enabled
   if (isModifierEnabled(this.modifiers, 'applyStyle')) {
     this.popper.removeAttribute('x-placement');
+    this.popper.style.left = '';
     this.popper.style.position = '';
     this.popper.style.top = '';
-    this.popper.style.left = '';
-    this.popper.style.right = '';
-    this.popper.style.bottom = '';
-    this.popper.style.willChange = '';
     this.popper.style[getSupportedPropertyName('transform')] = '';
   }
 
@@ -38429,19 +38475,9 @@ function destroy() {
   return this;
 }
 
-/**
- * Get the window associated with the element
- * @argument {Element} element
- * @returns {Window}
- */
-function getWindow(element) {
-  var ownerDocument = element.ownerDocument;
-  return ownerDocument ? ownerDocument.defaultView : window;
-}
-
 function attachToScrollParents(scrollParent, event, callback, scrollParents) {
   var isBody = scrollParent.nodeName === 'BODY';
-  var target = isBody ? scrollParent.ownerDocument.defaultView : scrollParent;
+  var target = isBody ? window : scrollParent;
   target.addEventListener(event, callback, { passive: true });
 
   if (!isBody) {
@@ -38459,7 +38495,7 @@ function attachToScrollParents(scrollParent, event, callback, scrollParents) {
 function setupEventListeners(reference, options, state, updateBound) {
   // Resize event listener on window
   state.updateBound = updateBound;
-  getWindow(reference).addEventListener('resize', state.updateBound, { passive: true });
+  window.addEventListener('resize', state.updateBound, { passive: true });
 
   // Scroll event listener on scroll parents
   var scrollElement = getScrollParent(reference);
@@ -38490,7 +38526,7 @@ function enableEventListeners() {
  */
 function removeEventListeners(reference, state) {
   // Remove resize event listener on window
-  getWindow(reference).removeEventListener('resize', state.updateBound);
+  window.removeEventListener('resize', state.updateBound);
 
   // Remove scroll event listener on scroll parents
   state.scrollParents.forEach(function (target) {
@@ -38507,14 +38543,14 @@ function removeEventListeners(reference, state) {
 
 /**
  * It will remove resize/scroll events and won't recalculate popper position
- * when they are triggered. It also won't trigger `onUpdate` callback anymore,
+ * when they are triggered. It also won't trigger onUpdate callback anymore,
  * unless you call `update` method manually.
  * @method
  * @memberof Popper
  */
 function disableEventListeners() {
   if (this.state.eventsEnabled) {
-    cancelAnimationFrame(this.scheduleUpdate);
+    window.cancelAnimationFrame(this.scheduleUpdate);
     this.state = removeEventListeners(this.reference, this.state);
   }
 }
@@ -38588,9 +38624,9 @@ function applyStyle(data) {
   // they will be set as HTML attributes of the element
   setAttributes(data.instance.popper, data.attributes);
 
-  // if arrowElement is defined and arrowStyles has some properties
-  if (data.arrowElement && Object.keys(data.arrowStyles).length) {
-    setStyles(data.arrowElement, data.arrowStyles);
+  // if the arrow style has been computed, apply the arrow style
+  if (data.offsets.arrow) {
+    setStyles(data.arrowElement, data.offsets.arrow);
   }
 
   return data;
@@ -38603,12 +38639,12 @@ function applyStyle(data) {
  * @method
  * @memberof Popper.modifiers
  * @param {HTMLElement} reference - The reference element used to position the popper
- * @param {HTMLElement} popper - The HTML element used as popper
+ * @param {HTMLElement} popper - The HTML element used as popper.
  * @param {Object} options - Popper.js options
  */
 function applyStyleOnLoad(reference, popper, options, modifierOptions, state) {
   // compute reference element offsets
-  var referenceOffsets = getReferenceOffsets(state, popper, reference, options.positionFixed);
+  var referenceOffsets = getReferenceOffsets(state, popper, reference);
 
   // compute auto placement, store placement inside the data object,
   // modifiers will be able to edit `placement` if needed
@@ -38619,56 +38655,10 @@ function applyStyleOnLoad(reference, popper, options, modifierOptions, state) {
 
   // Apply `position` to popper before anything else because
   // without the position applied we can't guarantee correct computations
-  setStyles(popper, { position: options.positionFixed ? 'fixed' : 'absolute' });
+  setStyles(popper, { position: 'absolute' });
 
   return options;
 }
-
-/**
- * @function
- * @memberof Popper.Utils
- * @argument {Object} data - The data object generated by `update` method
- * @argument {Boolean} shouldRound - If the offsets should be rounded at all
- * @returns {Object} The popper's position offsets rounded
- *
- * The tale of pixel-perfect positioning. It's still not 100% perfect, but as
- * good as it can be within reason.
- * Discussion here: https://github.com/FezVrasta/popper.js/pull/715
- *
- * Low DPI screens cause a popper to be blurry if not using full pixels (Safari
- * as well on High DPI screens).
- *
- * Firefox prefers no rounding for positioning and does not have blurriness on
- * high DPI screens.
- *
- * Only horizontal placement and left/right values need to be considered.
- */
-function getRoundedOffsets(data, shouldRound) {
-  var _data$offsets = data.offsets,
-      popper = _data$offsets.popper,
-      reference = _data$offsets.reference;
-
-
-  var isVertical = ['left', 'right'].indexOf(data.placement) !== -1;
-  var isVariation = data.placement.indexOf('-') !== -1;
-  var sameWidthOddness = reference.width % 2 === popper.width % 2;
-  var bothOddWidth = reference.width % 2 === 1 && popper.width % 2 === 1;
-  var noRound = function noRound(v) {
-    return v;
-  };
-
-  var horizontalToInteger = !shouldRound ? noRound : isVertical || isVariation || sameWidthOddness ? Math.round : Math.floor;
-  var verticalToInteger = !shouldRound ? noRound : Math.round;
-
-  return {
-    left: horizontalToInteger(bothOddWidth && !isVariation && shouldRound ? popper.left - 1 : popper.left),
-    top: verticalToInteger(popper.top),
-    bottom: verticalToInteger(popper.bottom),
-    right: horizontalToInteger(popper.right)
-  };
-}
-
-var isFirefox = isBrowser && /Firefox/i.test(navigator.userAgent);
 
 /**
  * @function
@@ -38700,7 +38690,13 @@ function computeStyle(data, options) {
     position: popper.position
   };
 
-  var offsets = getRoundedOffsets(data, window.devicePixelRatio < 2 || !isFirefox);
+  // floor sides to avoid blurry text
+  var offsets = {
+    left: Math.floor(popper.left),
+    top: Math.floor(popper.top),
+    bottom: Math.floor(popper.bottom),
+    right: Math.floor(popper.right)
+  };
 
   var sideA = x === 'bottom' ? 'top' : 'bottom';
   var sideB = y === 'right' ? 'left' : 'right';
@@ -38722,22 +38718,12 @@ function computeStyle(data, options) {
   var left = void 0,
       top = void 0;
   if (sideA === 'bottom') {
-    // when offsetParent is <html> the positioning is relative to the bottom of the screen (excluding the scrollbar)
-    // and not the bottom of the html element
-    if (offsetParent.nodeName === 'HTML') {
-      top = -offsetParent.clientHeight + offsets.bottom;
-    } else {
-      top = -offsetParentRect.height + offsets.bottom;
-    }
+    top = -offsetParentRect.height + offsets.bottom;
   } else {
     top = offsets.top;
   }
   if (sideB === 'right') {
-    if (offsetParent.nodeName === 'HTML') {
-      left = -offsetParent.clientWidth + offsets.right;
-    } else {
-      left = -offsetParentRect.width + offsets.right;
-    }
+    left = -offsetParentRect.width + offsets.right;
   } else {
     left = offsets.left;
   }
@@ -38760,10 +38746,9 @@ function computeStyle(data, options) {
     'x-placement': data.placement
   };
 
-  // Update `data` attributes, styles and arrowStyles
+  // Update attributes and styles of `data`
   data.attributes = _extends({}, attributes, data.attributes);
   data.styles = _extends({}, styles, data.styles);
-  data.arrowStyles = _extends({}, data.offsets.arrow, data.arrowStyles);
 
   return data;
 }
@@ -38804,8 +38789,6 @@ function isModifierRequired(modifiers, requestingName, requestedName) {
  * @returns {Object} The data object, properly modified
  */
 function arrow(data, options) {
-  var _data$offsets$arrow;
-
   // arrow depends on keepTogether in order to work
   if (!isModifierRequired(data.instance.modifiers, 'arrow', 'keepTogether')) {
     return data;
@@ -38838,15 +38821,13 @@ function arrow(data, options) {
   var isVertical = ['left', 'right'].indexOf(placement) !== -1;
 
   var len = isVertical ? 'height' : 'width';
-  var sideCapitalized = isVertical ? 'Top' : 'Left';
-  var side = sideCapitalized.toLowerCase();
+  var side = isVertical ? 'top' : 'left';
   var altSide = isVertical ? 'left' : 'top';
   var opSide = isVertical ? 'bottom' : 'right';
   var arrowElementSize = getOuterSizes(arrowElement)[len];
 
   //
-  // extends keepTogether behavior making sure the popper and its
-  // reference have enough pixels in conjunction
+  // extends keepTogether behavior making sure the popper and its reference have enough pixels in conjuction
   //
 
   // top/left side
@@ -38857,23 +38838,20 @@ function arrow(data, options) {
   if (reference[side] + arrowElementSize > popper[opSide]) {
     data.offsets.popper[side] += reference[side] + arrowElementSize - popper[opSide];
   }
-  data.offsets.popper = getClientRect(data.offsets.popper);
 
   // compute center of the popper
   var center = reference[side] + reference[len] / 2 - arrowElementSize / 2;
 
   // Compute the sideValue using the updated popper offsets
-  // take popper margin in account because we don't have this info available
-  var css = getStyleComputedProperty(data.instance.popper);
-  var popperMarginSide = parseFloat(css['margin' + sideCapitalized], 10);
-  var popperBorderSide = parseFloat(css['border' + sideCapitalized + 'Width'], 10);
-  var sideValue = center - data.offsets.popper[side] - popperMarginSide - popperBorderSide;
+  var sideValue = center - getClientRect(data.offsets.popper)[side];
 
   // prevent arrowElement from being placed not contiguously to its popper
   sideValue = Math.max(Math.min(popper[len] - arrowElementSize, sideValue), 0);
 
   data.arrowElement = arrowElement;
-  data.offsets.arrow = (_data$offsets$arrow = {}, defineProperty(_data$offsets$arrow, side, Math.round(sideValue)), defineProperty(_data$offsets$arrow, altSide, ''), _data$offsets$arrow);
+  data.offsets.arrow = {};
+  data.offsets.arrow[side] = Math.round(sideValue);
+  data.offsets.arrow[altSide] = ''; // make sure to unset any eventual altSide value from the DOM node
 
   return data;
 }
@@ -38916,7 +38894,7 @@ function getOppositeVariation(variation) {
  * - `top-end` (on top of reference, right aligned)
  * - `right-start` (on right of reference, top aligned)
  * - `bottom` (on bottom, centered)
- * - `auto-end` (on the side with more space available, alignment depends by placement)
+ * - `auto-right` (on the side with more space available, alignment depends by placement)
  *
  * @static
  * @type {Array}
@@ -38972,7 +38950,7 @@ function flip(data, options) {
     return data;
   }
 
-  var boundaries = getBoundaries(data.instance.popper, data.instance.reference, options.padding, options.boundariesElement, data.positionFixed);
+  var boundaries = getBoundaries(data.instance.popper, data.instance.reference, options.padding, options.boundariesElement);
 
   var placement = data.placement.split('-')[0];
   var placementOpposite = getOppositePlacement(placement);
@@ -39264,27 +39242,7 @@ function preventOverflow(data, options) {
     boundariesElement = getOffsetParent(boundariesElement);
   }
 
-  // NOTE: DOM access here
-  // resets the popper's position so that the document size can be calculated excluding
-  // the size of the popper element itself
-  var transformProp = getSupportedPropertyName('transform');
-  var popperStyles = data.instance.popper.style; // assignment to help minification
-  var top = popperStyles.top,
-      left = popperStyles.left,
-      transform = popperStyles[transformProp];
-
-  popperStyles.top = '';
-  popperStyles.left = '';
-  popperStyles[transformProp] = '';
-
-  var boundaries = getBoundaries(data.instance.popper, data.instance.reference, options.padding, boundariesElement, data.positionFixed);
-
-  // NOTE: DOM access here
-  // restores the original style properties after the offsets have been computed
-  popperStyles.top = top;
-  popperStyles.left = left;
-  popperStyles[transformProp] = transform;
-
+  var boundaries = getBoundaries(data.instance.popper, data.instance.reference, options.padding, boundariesElement);
   options.boundaries = boundaries;
 
   var order = options.priority;
@@ -39407,7 +39365,7 @@ function inner(data) {
 
   var subtractLength = ['top', 'left'].indexOf(basePlacement) === -1;
 
-  popper[isHoriz ? 'left' : 'top'] = reference[basePlacement] - (subtractLength ? popper[isHoriz ? 'width' : 'height'] : 0);
+  popper[isHoriz ? 'left' : 'top'] = reference[placement] - (subtractLength ? popper[isHoriz ? 'width' : 'height'] : 0);
 
   data.placement = getOppositePlacement(placement);
   data.offsets.popper = getClientRect(popper);
@@ -39458,7 +39416,7 @@ var modifiers = {
    * The `offset` modifier can shift your popper on both its axis.
    *
    * It accepts the following units:
-   * - `px` or unit-less, interpreted as pixels
+   * - `px` or unitless, interpreted as pixels
    * - `%` or `%r`, percentage relative to the length of the reference element
    * - `%p`, percentage relative to the length of the popper element
    * - `vw`, CSS viewport width unit
@@ -39466,7 +39424,7 @@ var modifiers = {
    *
    * For length is intended the main axis relative to the placement of the popper.<br />
    * This means that if the placement is `top` or `bottom`, the length will be the
-   * `width`. In case of `left` or `right`, it will be the `height`.
+   * `width`. In case of `left` or `right`, it will be the height.
    *
    * You can provide a single value (as `Number` or `String`), or a pair of values
    * as `String` divided by a comma or one (or more) white spaces.<br />
@@ -39485,9 +39443,6 @@ var modifiers = {
    * '10 - 5vh + 3%'
    * '-10px + 5vh, 5px - 6%'
    * ```
-   * > **NB**: If you desire to apply offsets to your poppers in a way that may make them overlap
-   * > with their reference element, unfortunately, you will have to disable the `flip` modifier.
-   * > You can read more on this at this [issue](https://github.com/FezVrasta/popper.js/issues/373).
    *
    * @memberof modifiers
    * @inner
@@ -39508,7 +39463,7 @@ var modifiers = {
   /**
    * Modifier used to prevent the popper from being positioned outside the boundary.
    *
-   * A scenario exists where the reference itself is not within the boundaries.<br />
+   * An scenario exists where the reference itself is not within the boundaries.<br />
    * We can say it has "escaped the boundaries" — or just "escaped".<br />
    * In this case we need to decide whether the popper should either:
    *
@@ -39538,23 +39493,23 @@ var modifiers = {
     /**
      * @prop {number} padding=5
      * Amount of pixel used to define a minimum distance between the boundaries
-     * and the popper. This makes sure the popper always has a little padding
+     * and the popper this makes sure the popper has always a little padding
      * between the edges of its container
      */
     padding: 5,
     /**
      * @prop {String|HTMLElement} boundariesElement='scrollParent'
-     * Boundaries used by the modifier. Can be `scrollParent`, `window`,
+     * Boundaries used by the modifier, can be `scrollParent`, `window`,
      * `viewport` or any DOM element.
      */
     boundariesElement: 'scrollParent'
   },
 
   /**
-   * Modifier used to make sure the reference and its popper stay near each other
-   * without leaving any gap between the two. Especially useful when the arrow is
-   * enabled and you want to ensure that it points to its reference element.
-   * It cares only about the first axis. You can still have poppers with margin
+   * Modifier used to make sure the reference and its popper stay near eachothers
+   * without leaving any gap between the two. Expecially useful when the arrow is
+   * enabled and you want to assure it to point to its reference element.
+   * It cares only about the first axis, you can still have poppers with margin
    * between the popper and its reference element.
    * @memberof modifiers
    * @inner
@@ -39572,7 +39527,7 @@ var modifiers = {
    * This modifier is used to move the `arrowElement` of the popper to make
    * sure it is positioned between the reference element and its popper element.
    * It will read the outer size of the `arrowElement` node to detect how many
-   * pixels of conjunction are needed.
+   * pixels of conjuction are needed.
    *
    * It has no effect if no `arrowElement` is provided.
    * @memberof modifiers
@@ -39611,7 +39566,7 @@ var modifiers = {
      * @prop {String|Array} behavior='flip'
      * The behavior used to change the popper's placement. It can be one of
      * `flip`, `clockwise`, `counterclockwise` or an array with a list of valid
-     * placements (with optional variations)
+     * placements (with optional variations).
      */
     behavior: 'flip',
     /**
@@ -39621,9 +39576,9 @@ var modifiers = {
     padding: 5,
     /**
      * @prop {String|HTMLElement} boundariesElement='viewport'
-     * The element which will define the boundaries of the popper position.
-     * The popper will never be placed outside of the defined boundaries
-     * (except if `keepTogether` is enabled)
+     * The element which will define the boundaries of the popper position,
+     * the popper will never be placed outside of the defined boundaries
+     * (except if keepTogether is enabled)
      */
     boundariesElement: 'viewport'
   },
@@ -39687,8 +39642,8 @@ var modifiers = {
     fn: computeStyle,
     /**
      * @prop {Boolean} gpuAcceleration=true
-     * If true, it uses the CSS 3D transformation to position the popper.
-     * Otherwise, it will use the `top` and `left` properties
+     * If true, it uses the CSS 3d transformation to position the popper.
+     * Otherwise, it will use the `top` and `left` properties.
      */
     gpuAcceleration: true,
     /**
@@ -39715,7 +39670,7 @@ var modifiers = {
    * Note that if you disable this modifier, you must make sure the popper element
    * has its position set to `absolute` before Popper.js can do its work!
    *
-   * Just disable this modifier and define your own to achieve the desired effect.
+   * Just disable this modifier and define you own to achieve the desired effect.
    *
    * @memberof modifiers
    * @inner
@@ -39732,27 +39687,26 @@ var modifiers = {
     /**
      * @deprecated since version 1.10.0, the property moved to `computeStyle` modifier
      * @prop {Boolean} gpuAcceleration=true
-     * If true, it uses the CSS 3D transformation to position the popper.
-     * Otherwise, it will use the `top` and `left` properties
+     * If true, it uses the CSS 3d transformation to position the popper.
+     * Otherwise, it will use the `top` and `left` properties.
      */
     gpuAcceleration: undefined
   }
 };
 
 /**
- * The `dataObject` is an object containing all the information used by Popper.js.
- * This object is passed to modifiers and to the `onCreate` and `onUpdate` callbacks.
+ * The `dataObject` is an object containing all the informations used by Popper.js
+ * this object get passed to modifiers and to the `onCreate` and `onUpdate` callbacks.
  * @name dataObject
  * @property {Object} data.instance The Popper.js instance
  * @property {String} data.placement Placement applied to popper
  * @property {String} data.originalPlacement Placement originally defined on init
  * @property {Boolean} data.flipped True if popper has been flipped by flip modifier
- * @property {Boolean} data.hide True if the reference element is out of boundaries, useful to know when to hide the popper
+ * @property {Boolean} data.hide True if the reference element is out of boundaries, useful to know when to hide the popper.
  * @property {HTMLElement} data.arrowElement Node used as arrow by arrow modifier
- * @property {Object} data.styles Any CSS property defined here will be applied to the popper. It expects the JavaScript nomenclature (eg. `marginBottom`)
- * @property {Object} data.arrowStyles Any CSS property defined here will be applied to the popper arrow. It expects the JavaScript nomenclature (eg. `marginBottom`)
+ * @property {Object} data.styles Any CSS property defined here will be applied to the popper, it expects the JavaScript nomenclature (eg. `marginBottom`)
  * @property {Object} data.boundaries Offsets of the popper boundaries
- * @property {Object} data.offsets The measurements of popper, reference and arrow elements
+ * @property {Object} data.offsets The measurements of popper, reference and arrow elements.
  * @property {Object} data.offsets.popper `top`, `left`, `width`, `height` values
  * @property {Object} data.offsets.reference `top`, `left`, `width`, `height` values
  * @property {Object} data.offsets.arrow] `top` and `left` offsets, only one of them will be different from 0
@@ -39760,9 +39714,9 @@ var modifiers = {
 
 /**
  * Default options provided to Popper.js constructor.<br />
- * These can be overridden using the `options` argument of Popper.js.<br />
- * To override an option, simply pass an object with the same
- * structure of the `options` object, as the 3rd argument. For example:
+ * These can be overriden using the `options` argument of Popper.js.<br />
+ * To override an option, simply pass as 3rd argument an object with the same
+ * structure of this object, example:
  * ```
  * new Popper(ref, pop, {
  *   modifiers: {
@@ -39776,19 +39730,13 @@ var modifiers = {
  */
 var Defaults = {
   /**
-   * Popper's placement.
+   * Popper's placement
    * @prop {Popper.placements} placement='bottom'
    */
   placement: 'bottom',
 
   /**
-   * Set this to true if you want popper to position it self in 'fixed' mode
-   * @prop {Boolean} positionFixed=false
-   */
-  positionFixed: false,
-
-  /**
-   * Whether events (resize, scroll) are initially enabled.
+   * Whether events (resize, scroll) are initially enabled
    * @prop {Boolean} eventsEnabled=true
    */
   eventsEnabled: true,
@@ -39802,17 +39750,17 @@ var Defaults = {
 
   /**
    * Callback called when the popper is created.<br />
-   * By default, it is set to no-op.<br />
+   * By default, is set to no-op.<br />
    * Access Popper.js instance with `data.instance`.
    * @prop {onCreate}
    */
   onCreate: function onCreate() {},
 
   /**
-   * Callback called when the popper is updated. This callback is not called
+   * Callback called when the popper is updated, this callback is not called
    * on the initialization/creation of the popper, but only on subsequent
    * updates.<br />
-   * By default, it is set to no-op.<br />
+   * By default, is set to no-op.<br />
    * Access Popper.js instance with `data.instance`.
    * @prop {onUpdate}
    */
@@ -39820,7 +39768,7 @@ var Defaults = {
 
   /**
    * List of modifiers used to modify the offsets before they are applied to the popper.
-   * They provide most of the functionalities of Popper.js.
+   * They provide most of the functionalities of Popper.js
    * @prop {modifiers}
    */
   modifiers: modifiers
@@ -39840,10 +39788,10 @@ var Defaults = {
 // Methods
 var Popper = function () {
   /**
-   * Creates a new Popper.js instance.
+   * Create a new Popper.js instance
    * @class Popper
    * @param {HTMLElement|referenceObject} reference - The reference element used to position the popper
-   * @param {HTMLElement} popper - The HTML element used as the popper
+   * @param {HTMLElement} popper - The HTML element used as popper.
    * @param {Object} options - Your custom options to override the ones defined in [Defaults](#defaults)
    * @return {Object} instance - The generated Popper.js instance
    */
@@ -39871,8 +39819,8 @@ var Popper = function () {
     };
 
     // get reference and popper elements (allow jQuery wrappers)
-    this.reference = reference && reference.jquery ? reference[0] : reference;
-    this.popper = popper && popper.jquery ? popper[0] : popper;
+    this.reference = reference.jquery ? reference[0] : reference;
+    this.popper = popper.jquery ? popper[0] : popper;
 
     // Deep merge modifiers options
     this.options.modifiers = {};
@@ -39939,7 +39887,7 @@ var Popper = function () {
     }
 
     /**
-     * Schedules an update. It will run on the next UI update available.
+     * Schedule an update, it will run on the next UI update available
      * @method scheduleUpdate
      * @memberof Popper
      */
@@ -39976,7 +39924,7 @@ var Popper = function () {
  * new Popper(referenceObject, popperNode);
  * ```
  *
- * NB: This feature isn't supported in Internet Explorer 10.
+ * NB: This feature isn't supported in Internet Explorer 10
  * @name referenceObject
  * @property {Function} data.getBoundingClientRect
  * A function that returns a set of coordinates compatible with the native `getBoundingClientRect` method.
@@ -71433,7 +71381,7 @@ var render = function() {
       _vm._v(" "),
       _vm.errors.length
         ? _c("p", [
-            _c("b", [_vm._v("Por favor corrija o seguinte erro(s):")]),
+            _c("b", [_vm._v("Por favor corrija o(s) seguinte(s) erro(s):")]),
             _vm._v(" "),
             _c(
               "ul",
@@ -71517,7 +71465,7 @@ var render = function() {
                       },
                       [
                         _c("option", { domProps: { value: null } }, [
-                          _vm._v("Distritos")
+                          _vm._v("Distritos...")
                         ]),
                         _vm._v(" "),
                         _vm._l(_vm.distritos, function(distrito) {
@@ -71726,7 +71674,7 @@ var render = function() {
                       },
                       [
                         _c("option", { domProps: { value: null } }, [
-                          _vm._v("Províncias")
+                          _vm._v("Províncias...")
                         ]),
                         _vm._v(" "),
                         _vm._l(_vm.provincias, function(provincia) {
@@ -72173,44 +72121,136 @@ var render = function() {
         _c("div", { staticClass: "col-md-8 pt-4 pb-4 no-float" }, [
           _c("div", { staticClass: "row p-l-12 p-r-12" }, [
             _c("div", { staticClass: "col-md-12 m-auto" }, [
-              _c("form", { attrs: { action: "#" } }, [
-                _vm.step1
-                  ? _c("div", { staticClass: "row m-0 step-1" }, [
-                      _c(
-                        "div",
-                        {
-                          staticClass: "m-4 col-md-6 p-3",
-                          staticStyle: { "max-width": "500px" }
-                        },
-                        [
-                          _c("h4", { staticClass: "_text-bc" }, [
-                            _vm._v("Onde o seu apartamento esta localizado?")
-                          ]),
-                          _vm._v(" "),
-                          _c("p", { staticClass: "text-muted" }, [
-                            _vm._v(
-                              " Para começar vamos indicar onde o seu apartamento esta localizado.."
-                            )
-                          ]),
-                          _vm._v(" "),
-                          _c("div", { staticClass: "_from" }, [
-                            _vm._m(1),
+              _c(
+                "form",
+                {
+                  attrs: { action: "#" },
+                  on: {
+                    submit: function($event) {
+                      $event.preventDefault()
+                      return _vm.onSubmitKaya($event)
+                    }
+                  }
+                },
+                [
+                  _vm.step1
+                    ? _c("div", { staticClass: "row m-0 step-1 fade show" }, [
+                        _c(
+                          "div",
+                          {
+                            staticClass: "m-4 col-md-6 p-3",
+                            staticStyle: { "max-width": "500px" }
+                          },
+                          [
+                            _c("h4", { staticClass: "_text-bc" }, [
+                              _vm._v("Onde o seu apartamento esta localizado?")
+                            ]),
                             _vm._v(" "),
-                            _c("div", { staticClass: "row m-0 pt-3" }, [
-                              _c("div", { staticClass: "col-6 pl-0" }, [
-                                _c(
-                                  "div",
-                                  {
-                                    staticClass: "f-title mb-2",
-                                    staticStyle: {
-                                      "font-weight": "500",
-                                      "text-transform": "upercase"
-                                    }
-                                  },
-                                  [_vm._v("Provincia")]
-                                ),
+                            _c("p", { staticClass: "text-muted" }, [
+                              _vm._v(
+                                " Para começar vamos indicar onde o seu apartamento esta localizado.."
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "_from" }, [
+                              _vm._m(1),
+                              _vm._v(" "),
+                              _c("div", { staticClass: "row m-0 pt-3" }, [
+                                _c("div", { staticClass: "col-6 pl-0" }, [
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass: "f-title mb-2",
+                                      staticStyle: {
+                                        "font-weight": "500",
+                                        "text-transform": "upercase"
+                                      }
+                                    },
+                                    [_vm._v("Provincia")]
+                                  ),
+                                  _vm._v(" "),
+                                  _c("div", [
+                                    _c(
+                                      "select",
+                                      {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.provincia,
+                                            expression: "provincia"
+                                          }
+                                        ],
+                                        staticClass:
+                                          "custom-select d-block w-100 ng-binding",
+                                        staticStyle: {
+                                          height:
+                                            "calc(2.75rem + 2px) !important"
+                                        },
+                                        attrs: { name: "prov", id: "" },
+                                        on: {
+                                          change: function($event) {
+                                            var $$selectedVal = Array.prototype.filter
+                                              .call(
+                                                $event.target.options,
+                                                function(o) {
+                                                  return o.selected
+                                                }
+                                              )
+                                              .map(function(o) {
+                                                var val =
+                                                  "_value" in o
+                                                    ? o._value
+                                                    : o.value
+                                                return val
+                                              })
+                                            _vm.provincia = $event.target
+                                              .multiple
+                                              ? $$selectedVal
+                                              : $$selectedVal[0]
+                                          }
+                                        }
+                                      },
+                                      [
+                                        _c(
+                                          "option",
+                                          { domProps: { value: null } },
+                                          [_vm._v("Províncias...")]
+                                        ),
+                                        _vm._v(" "),
+                                        _vm._l(_vm.provincias, function(
+                                          provincia
+                                        ) {
+                                          return _c(
+                                            "option",
+                                            {
+                                              key: provincia.id,
+                                              domProps: {
+                                                value: provincia.nome
+                                              }
+                                            },
+                                            [_vm._v(_vm._s(provincia.nome))]
+                                          )
+                                        })
+                                      ],
+                                      2
+                                    )
+                                  ])
+                                ]),
                                 _vm._v(" "),
-                                _c("div", [
+                                _c("div", { staticClass: "col-6 pl-0 pr-0" }, [
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass: "f-title mb-2",
+                                      staticStyle: {
+                                        "font-weight": "500",
+                                        "text-transform": "upercase"
+                                      }
+                                    },
+                                    [_vm._v("Distrito")]
+                                  ),
+                                  _vm._v(" "),
                                   _c(
                                     "select",
                                     {
@@ -72218,8 +72258,8 @@ var render = function() {
                                         {
                                           name: "model",
                                           rawName: "v-model",
-                                          value: _vm.provincia,
-                                          expression: "provincia"
+                                          value: _vm.distrito,
+                                          expression: "distrito"
                                         }
                                       ],
                                       staticClass:
@@ -72227,7 +72267,7 @@ var render = function() {
                                       staticStyle: {
                                         height: "calc(2.75rem + 2px) !important"
                                       },
-                                      attrs: { name: "prov", id: "" },
+                                      attrs: { name: "distrito_id", id: "" },
                                       on: {
                                         change: function($event) {
                                           var $$selectedVal = Array.prototype.filter
@@ -72244,30 +72284,59 @@ var render = function() {
                                                   : o.value
                                               return val
                                             })
-                                          _vm.provincia = $event.target.multiple
+                                          _vm.distrito = $event.target.multiple
                                             ? $$selectedVal
                                             : $$selectedVal[0]
                                         }
                                       }
                                     },
                                     [
-                                      _c(
-                                        "option",
-                                        { domProps: { value: null } },
-                                        [_vm._v("Províncias...")]
-                                      ),
+                                      !_vm.provincia
+                                        ? _c(
+                                            "option",
+                                            { domProps: { value: null } },
+                                            [
+                                              _vm._v(
+                                                "Selecione a Província ..."
+                                              )
+                                            ]
+                                          )
+                                        : _vm._e(),
                                       _vm._v(" "),
-                                      _vm._l(_vm.provincias, function(
-                                        provincia
+                                      _vm.provincia
+                                        ? _c(
+                                            "option",
+                                            { domProps: { value: null } },
+                                            [
+                                              _vm._v(
+                                                "Distritos (" +
+                                                  _vm._s(
+                                                    _vm.filterDistritos.length
+                                                  ) +
+                                                  ") ..."
+                                              )
+                                            ]
+                                          )
+                                        : _vm._e(),
+                                      _vm._v(" "),
+                                      _vm._l(_vm.filterDistritos, function(
+                                        distrito
                                       ) {
-                                        return _c(
-                                          "option",
-                                          {
-                                            key: provincia.id,
-                                            domProps: { value: provincia.nome }
-                                          },
-                                          [_vm._v(_vm._s(provincia.nome))]
-                                        )
+                                        return _vm.provincia
+                                          ? _c(
+                                              "option",
+                                              {
+                                                key: distrito.id,
+                                                attrs: {
+                                                  p_id: distrito.provincia_id
+                                                },
+                                                domProps: {
+                                                  value: distrito.nome
+                                                }
+                                              },
+                                              [_vm._v(_vm._s(distrito.nome))]
+                                            )
+                                          : _vm._e()
                                       })
                                     ],
                                     2
@@ -72275,162 +72344,385 @@ var render = function() {
                                 ])
                               ]),
                               _vm._v(" "),
-                              _c("div", { staticClass: "col-6 pl-0 pr-0" }, [
-                                _c(
-                                  "div",
-                                  {
-                                    staticClass: "f-title mb-2",
-                                    staticStyle: {
-                                      "font-weight": "500",
-                                      "text-transform": "upercase"
-                                    }
-                                  },
-                                  [_vm._v("Distrito")]
-                                ),
-                                _vm._v(" "),
-                                _c(
-                                  "select",
-                                  {
-                                    directives: [
-                                      {
-                                        name: "model",
-                                        rawName: "v-model",
-                                        value: _vm.distrito,
-                                        expression: "distrito"
+                              _c("div", { staticClass: "m-0" }, [
+                                _c("div", { staticClass: "col-12 mt-4 p-0" }, [
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass: "f-title text-muted mb-2",
+                                      staticStyle: {
+                                        "font-weight": "500",
+                                        "text-transform": "upercase"
                                       }
-                                    ],
-                                    staticClass:
-                                      "custom-select d-block w-100 ng-binding",
-                                    staticStyle: {
-                                      height: "calc(2.75rem + 2px) !important"
                                     },
-                                    attrs: { name: "distrito_id", id: "" },
-                                    on: {
-                                      change: function($event) {
-                                        var $$selectedVal = Array.prototype.filter
-                                          .call($event.target.options, function(
-                                            o
-                                          ) {
-                                            return o.selected
-                                          })
-                                          .map(function(o) {
-                                            var val =
-                                              "_value" in o ? o._value : o.value
-                                            return val
-                                          })
-                                        _vm.distrito = $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
-                                      }
-                                    }
-                                  },
-                                  [
-                                    !_vm.provincia
-                                      ? _c(
-                                          "option",
-                                          { domProps: { value: null } },
-                                          [_vm._v("Selecione a Província ...")]
-                                        )
-                                      : _vm._e(),
-                                    _vm._v(" "),
-                                    _vm.provincia
-                                      ? _c(
-                                          "option",
-                                          { domProps: { value: null } },
-                                          [
-                                            _vm._v(
-                                              "Distritos (" +
-                                                _vm._s(
-                                                  _vm.filterDistritos.length
-                                                ) +
-                                                ") ..."
-                                            )
-                                          ]
-                                        )
-                                      : _vm._e(),
-                                    _vm._v(" "),
-                                    _vm._l(_vm.filterDistritos, function(
-                                      distrito
+                                    [
+                                      _vm._v(
+                                        "Selecione as universidades próximas"
+                                      )
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _c("p", { staticClass: "text-muted" }, [
+                                    _vm._v(
+                                      " Ao indicar as universidades próximas do seu apartamento você ajuda o usuário a encontra-lo com maior facilidade."
+                                    )
+                                  ]),
+                                  _vm._v(" "),
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass:
+                                        "ms-shadow p-2 bg-white rounded",
+                                      staticStyle: { "min-height": "230px" }
+                                    },
+                                    _vm._l(_vm.filterUniversidades, function(
+                                      universidade
                                     ) {
                                       return _vm.provincia
                                         ? _c(
-                                            "option",
+                                            "div",
                                             {
-                                              key: distrito.id,
-                                              attrs: {
-                                                p_id: distrito.provincia_id
-                                              },
-                                              domProps: { value: distrito.nome }
+                                              key: universidade.id,
+                                              staticClass: "row m-0"
                                             },
-                                            [_vm._v(_vm._s(distrito.nome))]
+                                            [
+                                              _vm.distrito
+                                                ? _c(
+                                                    "div",
+                                                    {
+                                                      staticClass:
+                                                        "custom-control custom-radio sel-l-opt"
+                                                    },
+                                                    [
+                                                      _c("input", {
+                                                        staticClass:
+                                                          "custom-control-input",
+                                                        attrs: {
+                                                          type: "checkbox",
+                                                          id: universidade.id
+                                                        },
+                                                        domProps: {
+                                                          value: universidade.id
+                                                        }
+                                                      }),
+                                                      _vm._v(" "),
+                                                      _c(
+                                                        "label",
+                                                        {
+                                                          staticClass:
+                                                            "custom-control-label my-custom-label",
+                                                          attrs: {
+                                                            for: universidade.id
+                                                          }
+                                                        },
+                                                        [
+                                                          _vm._v(
+                                                            _vm._s(
+                                                              universidade.nome
+                                                            )
+                                                          )
+                                                        ]
+                                                      )
+                                                    ]
+                                                  )
+                                                : _vm._e()
+                                            ]
                                           )
                                         : _vm._e()
-                                    })
-                                  ],
-                                  2
-                                )
+                                    }),
+                                    0
+                                  )
+                                ]),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "col-12 mt-4 p-0" }, [
+                                  _c("div", { staticClass: "float-md-right" }, [
+                                    _c(
+                                      "div",
+                                      {
+                                        staticClass: "btn btn-primary",
+                                        on: {
+                                          click: function($event) {
+                                            _vm.toStep(2)
+                                          }
+                                        }
+                                      },
+                                      [_vm._v("Continuar")]
+                                    )
+                                  ])
+                                ])
                               ])
+                            ])
+                          ]
+                        )
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.step2
+                    ? _c("div", { staticClass: "step-2 fade show" }, [
+                        _c(
+                          "div",
+                          {
+                            staticClass: "m-4 col-md-6 p-3",
+                            staticStyle: { "max-width": "500px" }
+                          },
+                          [
+                            _c("h4", { staticClass: "_text-bc" }, [
+                              _vm._v("Tipo de apartamento")
                             ]),
                             _vm._v(" "),
-                            _c("div", { staticClass: "m-0" }, [
-                              _c("div", { staticClass: "col-12 mt-4 p-0" }, [
+                            _c("p", { staticClass: "text-muted" }, [
+                              _vm._v(
+                                "Indique o tipo de casa na qual os estudantes serão hospedes."
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              { staticClass: "mt-4 border-top selection_from" },
+                              [
                                 _c(
                                   "div",
                                   {
-                                    staticClass: "f-title text-muted mb-2",
-                                    staticStyle: {
-                                      "font-weight": "500",
-                                      "text-transform": "upercase"
-                                    }
+                                    staticClass:
+                                      "sl-op m-2 mb-3 p-1 custom-control custom-radio"
                                   },
                                   [
-                                    _vm._v(
-                                      "Selecione as universidades próximas"
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.hostType,
+                                          expression: "hostType"
+                                        }
+                                      ],
+                                      staticClass: "custom-control-input",
+                                      attrs: {
+                                        type: "radio",
+                                        name: "hostType",
+                                        id: "typeRoom1",
+                                        value: "repo"
+                                      },
+                                      domProps: {
+                                        checked: _vm._q(_vm.hostType, "repo")
+                                      },
+                                      on: {
+                                        change: function($event) {
+                                          _vm.hostType = "repo"
+                                        }
+                                      }
+                                    }),
+                                    _vm._v(" "),
+                                    _c(
+                                      "label",
+                                      {
+                                        staticClass:
+                                          "f-title custom-control-label",
+                                        attrs: { for: "typeRoom1" }
+                                      },
+                                      [_vm._v("República")]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "div",
+                                      { staticClass: "sb-c-l text-muted" },
+                                      [
+                                        _vm._v(
+                                          "\n                      Republicas são apartamento (geralmente uma casa) com dois ou mais quartos compartilháveis.\n                    "
+                                        )
+                                      ]
                                     )
                                   ]
                                 ),
                                 _vm._v(" "),
-                                _c("p", { staticClass: "text-muted" }, [
-                                  _vm._v(
-                                    " Ao indicar as universidades próximas do seu apartamento você ajuda o usuário a encontra-lo com maior facilidade."
-                                  )
-                                ]),
+                                _c(
+                                  "div",
+                                  {
+                                    staticClass:
+                                      "sl-op m-2 mb-3 p-1 custom-control custom-radio"
+                                  },
+                                  [
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.hostType,
+                                          expression: "hostType"
+                                        }
+                                      ],
+                                      staticClass: "custom-control-input",
+                                      attrs: {
+                                        type: "radio",
+                                        name: "hostType",
+                                        id: "typeRoom2",
+                                        value: "condo"
+                                      },
+                                      domProps: {
+                                        checked: _vm._q(_vm.hostType, "condo")
+                                      },
+                                      on: {
+                                        change: function($event) {
+                                          _vm.hostType = "condo"
+                                        }
+                                      }
+                                    }),
+                                    _vm._v(" "),
+                                    _c(
+                                      "label",
+                                      {
+                                        staticClass:
+                                          "f-title custom-control-label",
+                                        attrs: { for: "typeRoom2" }
+                                      },
+                                      [_vm._v("Condómino (para estudantes)")]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "div",
+                                      { staticClass: "sb-c-l text-muted" },
+                                      [
+                                        _vm._v(
+                                          "\n                      Uma rede de quartos construídos especificamente para hospedar estudantes.\n                    "
+                                        )
+                                      ]
+                                    )
+                                  ]
+                                ),
                                 _vm._v(" "),
                                 _c(
                                   "div",
                                   {
                                     staticClass:
-                                      "ms-shadow p-2 bg-white rounded",
-                                    staticStyle: { "min-height": "230px" }
+                                      "sl-op m-2 mb-3 p-1 custom-control custom-radio"
                                   },
-                                  _vm._l(_vm.filterUniversidades, function(
-                                    universidade
-                                  ) {
-                                    return _vm.provincia
-                                      ? _c(
-                                          "div",
-                                          {
-                                            key: universidade.id,
-                                            staticClass: "row m-0"
-                                          },
-                                          [
-                                            _vm.distrito
-                                              ? _c(
+                                  [
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.hostType,
+                                          expression: "hostType"
+                                        }
+                                      ],
+                                      staticClass: "custom-control-input",
+                                      attrs: {
+                                        type: "radio",
+                                        name: "hostType",
+                                        id: "typeRoom3",
+                                        value: "room"
+                                      },
+                                      domProps: {
+                                        checked: _vm._q(_vm.hostType, "room")
+                                      },
+                                      on: {
+                                        change: function($event) {
+                                          _vm.hostType = "room"
+                                        }
+                                      }
+                                    }),
+                                    _vm._v(" "),
+                                    _c(
+                                      "label",
+                                      {
+                                        staticClass:
+                                          "f-title text-muted custom-control-label",
+                                        attrs: { for: "typeRoom3" }
+                                      },
+                                      [_vm._v("Um Quarto (para estudantes)")]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "div",
+                                      { staticClass: "sb-c-l text-muted" },
+                                      [
+                                        _vm._v(
+                                          "\n                      Estou recebendo hospedes para um quarto. (quarto fora da casa principal ou quarto privado).\n                    "
+                                        )
+                                      ]
+                                    )
+                                  ]
+                                )
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _vm.hostType
+                              ? _c("div", { attrs: { mode: "in-out" } }, [
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass:
+                                        "mt-4 p-3 card border-0 ms-shadow",
+                                      attrs: { transation: "expand" }
+                                    },
+                                    [
+                                      _c("h4", { staticClass: "_text-bc " }, [
+                                        _vm._v("Condições do imóvel")
+                                      ]),
+                                      _vm._v(" "),
+                                      _c("p", { staticClass: "text-muted" }, [
+                                        _vm._v(
+                                          "Indique o tipo de casa na qual os estudantes serão hospedes (rever texto)."
+                                        )
+                                      ]),
+                                      _vm._v(" "),
+                                      _c(
+                                        "div",
+                                        {
+                                          staticClass:
+                                            "pt-3 border-top selection_from"
+                                        },
+                                        [
+                                          _c("div", [
+                                            _vm._m(2),
+                                            _vm._v(" "),
+                                            _c(
+                                              "div",
+                                              {
+                                                staticClass:
+                                                  "selection_options pl-4"
+                                              },
+                                              [
+                                                _c(
                                                   "div",
                                                   {
                                                     staticClass:
-                                                      "custom-control custom-radio sel-l-opt"
+                                                      "sl-op m-2 mb-3 p-1 custom-control custom-radio"
                                                   },
                                                   [
                                                     _c("input", {
+                                                      directives: [
+                                                        {
+                                                          name: "model",
+                                                          rawName: "v-model",
+                                                          value:
+                                                            _vm.typeContador,
+                                                          expression:
+                                                            "typeContador"
+                                                        }
+                                                      ],
                                                       staticClass:
                                                         "custom-control-input",
                                                       attrs: {
-                                                        type: "checkbox",
-                                                        id: universidade.id
+                                                        type: "radio",
+                                                        name: "typeContador",
+                                                        id: "typeContador1",
+                                                        value: "3003"
                                                       },
                                                       domProps: {
-                                                        value: universidade.id
+                                                        checked: _vm._q(
+                                                          _vm.typeContador,
+                                                          "3003"
+                                                        )
+                                                      },
+                                                      on: {
+                                                        change: function(
+                                                          $event
+                                                        ) {
+                                                          _vm.typeContador =
+                                                            "3003"
+                                                        }
                                                       }
                                                     }),
                                                     _vm._v(" "),
@@ -72438,127 +72730,476 @@ var render = function() {
                                                       "label",
                                                       {
                                                         staticClass:
-                                                          "custom-control-label my-custom-label",
+                                                          "f-title custom-control-label",
                                                         attrs: {
-                                                          for: universidade.id
+                                                          for: "typeContador1"
                                                         }
                                                       },
                                                       [
                                                         _vm._v(
-                                                          _vm._s(
-                                                            universidade.nome
-                                                          )
+                                                          "Contador Particular"
+                                                        )
+                                                      ]
+                                                    ),
+                                                    _vm._v(" "),
+                                                    _c(
+                                                      "div",
+                                                      {
+                                                        staticClass:
+                                                          "sb-c-l text-muted"
+                                                      },
+                                                      [
+                                                        _vm._v(
+                                                          "\n                              No contador particular, a gestão de compra e consumo de energia é com o hospede da casa.\n                            "
+                                                        )
+                                                      ]
+                                                    )
+                                                  ]
+                                                ),
+                                                _vm._v(" "),
+                                                _c(
+                                                  "div",
+                                                  {
+                                                    staticClass:
+                                                      "sl-op m-2 mb-3 p-1 custom-control custom-radio"
+                                                  },
+                                                  [
+                                                    _c("input", {
+                                                      directives: [
+                                                        {
+                                                          name: "model",
+                                                          rawName: "v-model",
+                                                          value:
+                                                            _vm.typeContador,
+                                                          expression:
+                                                            "typeContador"
+                                                        }
+                                                      ],
+                                                      staticClass:
+                                                        "custom-control-input",
+                                                      attrs: {
+                                                        type: "radio",
+                                                        name: "typeContador",
+                                                        id: "typeContador2",
+                                                        value: "3030"
+                                                      },
+                                                      domProps: {
+                                                        checked: _vm._q(
+                                                          _vm.typeContador,
+                                                          "3030"
+                                                        )
+                                                      },
+                                                      on: {
+                                                        change: function(
+                                                          $event
+                                                        ) {
+                                                          _vm.typeContador =
+                                                            "3030"
+                                                        }
+                                                      }
+                                                    }),
+                                                    _vm._v(" "),
+                                                    _c(
+                                                      "label",
+                                                      {
+                                                        staticClass:
+                                                          "f-title custom-control-label",
+                                                        attrs: {
+                                                          for: "typeContador2"
+                                                        }
+                                                      },
+                                                      [
+                                                        _vm._v(
+                                                          "Contador Compartilhado"
+                                                        )
+                                                      ]
+                                                    ),
+                                                    _vm._v(" "),
+                                                    _c(
+                                                      "div",
+                                                      {
+                                                        staticClass:
+                                                          "sb-c-l text-muted"
+                                                      },
+                                                      [
+                                                        _vm._v(
+                                                          "\n                              O contador é único (ou do condomínio), e gestão do consumo é com os hospedes do condomínio.\n                            "
                                                         )
                                                       ]
                                                     )
                                                   ]
                                                 )
-                                              : _vm._e()
-                                          ]
-                                        )
-                                      : _vm._e()
-                                  }),
-                                  0
-                                )
-                              ]),
-                              _vm._v(" "),
-                              _c("div", { staticClass: "col-12 mt-4 p-0" }, [
-                                _c("div", { staticClass: "float-md-right" }, [
+                                              ]
+                                            )
+                                          ]),
+                                          _vm._v(" "),
+                                          _c("div", [
+                                            _vm._m(3),
+                                            _vm._v(" "),
+                                            _c(
+                                              "div",
+                                              {
+                                                staticClass:
+                                                  "selection_options pl-4",
+                                                staticStyle: {
+                                                  "margin-top": "35px"
+                                                }
+                                              },
+                                              [
+                                                _c(
+                                                  "div",
+                                                  {
+                                                    staticClass:
+                                                      "sl-op m-2 mb-3 p-1 custom-control custom-radio"
+                                                  },
+                                                  [
+                                                    _c("input", {
+                                                      directives: [
+                                                        {
+                                                          name: "model",
+                                                          rawName: "v-model",
+                                                          value: _vm.hostAgua,
+                                                          expression: "hostAgua"
+                                                        }
+                                                      ],
+                                                      staticClass:
+                                                        "custom-control-input",
+                                                      attrs: {
+                                                        type: "radio",
+                                                        name: "hostAgua",
+                                                        id: "aguaOption1",
+                                                        value: "3187"
+                                                      },
+                                                      domProps: {
+                                                        checked: _vm._q(
+                                                          _vm.hostAgua,
+                                                          "3187"
+                                                        )
+                                                      },
+                                                      on: {
+                                                        change: function(
+                                                          $event
+                                                        ) {
+                                                          _vm.hostAgua = "3187"
+                                                        }
+                                                      }
+                                                    }),
+                                                    _vm._v(" "),
+                                                    _c(
+                                                      "label",
+                                                      {
+                                                        staticClass:
+                                                          "f-title custom-control-label",
+                                                        attrs: {
+                                                          for: "aguaOption1"
+                                                        }
+                                                      },
+                                                      [_vm._v("No quintal")]
+                                                    ),
+                                                    _vm._v(" "),
+                                                    _c(
+                                                      "div",
+                                                      {
+                                                        staticClass:
+                                                          "sb-c-l text-muted"
+                                                      },
+                                                      [
+                                                        _vm._v(
+                                                          "\n                              No quintal onde esta localizado o apartamento tem água canalizada.\n                            "
+                                                        )
+                                                      ]
+                                                    )
+                                                  ]
+                                                ),
+                                                _vm._v(" "),
+                                                _c(
+                                                  "div",
+                                                  {
+                                                    staticClass:
+                                                      "sl-op m-2 mb-3 p-1 custom-control custom-radio"
+                                                  },
+                                                  [
+                                                    _c("input", {
+                                                      directives: [
+                                                        {
+                                                          name: "model",
+                                                          rawName: "v-model",
+                                                          value: _vm.hostAgua,
+                                                          expression: "hostAgua"
+                                                        }
+                                                      ],
+                                                      staticClass:
+                                                        "custom-control-input",
+                                                      attrs: {
+                                                        type: "radio",
+                                                        name: "hostAgua",
+                                                        id: "aguaOption2",
+                                                        value: "8798"
+                                                      },
+                                                      domProps: {
+                                                        checked: _vm._q(
+                                                          _vm.hostAgua,
+                                                          "8798"
+                                                        )
+                                                      },
+                                                      on: {
+                                                        change: function(
+                                                          $event
+                                                        ) {
+                                                          _vm.hostAgua = "8798"
+                                                        }
+                                                      }
+                                                    }),
+                                                    _vm._v(" "),
+                                                    _c(
+                                                      "label",
+                                                      {
+                                                        staticClass:
+                                                          "f-title custom-control-label",
+                                                        attrs: {
+                                                          for: "aguaOption2"
+                                                        }
+                                                      },
+                                                      [_vm._v("Fácil Acesso")]
+                                                    ),
+                                                    _vm._v(" "),
+                                                    _c(
+                                                      "div",
+                                                      {
+                                                        staticClass:
+                                                          "sb-c-l text-muted"
+                                                      },
+                                                      [
+                                                        _vm._v(
+                                                          "\n                              Não temos água canalizada mais é de fácil acesso no bairro.\n                            "
+                                                        )
+                                                      ]
+                                                    )
+                                                  ]
+                                                )
+                                              ]
+                                            )
+                                          ])
+                                        ]
+                                      )
+                                    ]
+                                  ),
+                                  _vm._v(" "),
                                   _c(
                                     "div",
                                     {
-                                      staticClass: "btn btn-primary",
-                                      on: {
-                                        click: function($event) {
-                                          _vm.toStep(2)
-                                        }
-                                      }
+                                      staticClass: "col-12 mt-4 p-0",
+                                      staticStyle: { height: "70px" }
                                     },
-                                    [_vm._v("Continuar")]
+                                    [
+                                      _c(
+                                        "div",
+                                        { staticClass: "float-md-right" },
+                                        [
+                                          _c(
+                                            "div",
+                                            {
+                                              staticClass:
+                                                "btn btn-outline-primary",
+                                              on: {
+                                                click: function($event) {
+                                                  _vm.toStep(1)
+                                                }
+                                              }
+                                            },
+                                            [_vm._v("Voltar")]
+                                          ),
+                                          _vm._v(" "),
+                                          _c(
+                                            "div",
+                                            {
+                                              staticClass: "btn btn-primary",
+                                              on: {
+                                                click: function($event) {
+                                                  _vm.toStep(3)
+                                                }
+                                              }
+                                            },
+                                            [_vm._v("Continuar")]
+                                          )
+                                        ]
+                                      )
+                                    ]
                                   )
                                 ])
-                              ])
-                            ])
-                          ])
-                        ]
-                      )
-                    ])
-                  : _vm._e(),
-                _vm._v(" "),
-                _vm.step2
-                  ? _c("div", { staticClass: "step-2 " }, [
-                      _c(
-                        "div",
-                        {
-                          staticClass: "m-4 col-md-6 p-3",
-                          staticStyle: { "max-width": "500px" }
-                        },
-                        [
-                          _c("h4", { staticClass: "_text-bc" }, [
-                            _vm._v("Tipo de apartamento")
-                          ]),
-                          _vm._v(" "),
-                          _c("p", { staticClass: "text-muted" }, [
-                            _vm._v(
-                              "Indique o tipo de casa na qual os estudantes serão hospedes."
+                              : _vm._e()
+                          ]
+                        )
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.step3
+                    ? _c("div", { staticClass: "step-3 fade show" }, [
+                        _c(
+                          "div",
+                          {
+                            staticClass: "m-4 col-md-6 p-3",
+                            staticStyle: { "max-width": "500px" }
+                          },
+                          [
+                            _vm._m(4),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              { staticClass: "mt-4 border-top selection_from" },
+                              [
+                                _c("div", { staticClass: "mt-3" }, [
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass: "f-title",
+                                      staticStyle: {
+                                        "font-weight": "500",
+                                        "text-transform": "upercase"
+                                      }
+                                    },
+                                    [_vm._v("Nome do Apartamento")]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "p",
+                                    { staticClass: "text-muted pb-1 m-0" },
+                                    [
+                                      _vm._v(
+                                        "Indique o tipo de casa na qual os estudantes serão hospedes."
+                                      )
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.hostNome,
+                                        expression: "hostNome"
+                                      }
+                                    ],
+                                    staticClass: "border-0 d-block w-100",
+                                    attrs: {
+                                      type: "text",
+                                      name: "hostNome",
+                                      id: "inp-n-home",
+                                      placeholder: "Nome do Apartamento"
+                                    },
+                                    domProps: { value: _vm.hostNome },
+                                    on: {
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.hostNome = $event.target.value
+                                      }
+                                    }
+                                  })
+                                ]),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "mt-3" }, [
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass: "f-title mb-2",
+                                      staticStyle: {
+                                        "font-weight": "500",
+                                        "text-transform": "upercase"
+                                      }
+                                    },
+                                    [
+                                      _vm._v("Apresentação do Apartamento "),
+                                      _c("em", [
+                                        _vm._v(
+                                          "(" +
+                                            _vm._s(_vm.nota_Desc.length) +
+                                            "  up to a " +
+                                            _vm._s(_vm.text_maxlength) +
+                                            " characters)"
+                                        )
+                                      ])
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _c("textarea", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.nota_Desc,
+                                        expression: "nota_Desc"
+                                      }
+                                    ],
+                                    staticClass: "border-0 w-100",
+                                    attrs: {
+                                      id: "textarea-home",
+                                      maxlength: _vm.text_maxlength,
+                                      placeholder: "Digite..."
+                                    },
+                                    domProps: { value: _vm.nota_Desc },
+                                    on: {
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.nota_Desc = $event.target.value
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c(
+                                    "p",
+                                    {
+                                      staticClass:
+                                        "text-muted pt-2 pl-1 pr-1 border-top"
+                                    },
+                                    [
+                                      _vm._v(
+                                        "Apresentação resumida da casa é primeira informação que os usuários vão poder ver quando pesquisarem sobre casas. Dica: seja objetivo. (Localização, Dimensões, Tipo de apartamento)."
+                                      )
+                                    ]
+                                  )
+                                ])
+                              ]
                             )
-                          ]),
-                          _vm._v(" "),
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "row ml-5 mr-5 mt-2" }, [
                           _c(
                             "div",
-                            { staticClass: "mt-4 border-top selection_from" },
+                            {
+                              staticClass: "pt-3 border-top",
+                              staticStyle: { "max-width": "740px" }
+                            },
                             [
+                              _vm._m(5),
+                              _vm._v(" "),
                               _c(
                                 "div",
-                                {
-                                  staticClass:
-                                    "sl-op m-2 mb-3 p-1 custom-control custom-radio"
-                                },
+                                { staticClass: "mt-2" },
                                 [
-                                  _c("input", {
-                                    directives: [
-                                      {
-                                        name: "model",
-                                        rawName: "v-model",
-                                        value: _vm.hostType,
-                                        expression: "hostType"
-                                      }
-                                    ],
-                                    staticClass: "custom-control-input",
-                                    attrs: {
-                                      type: "radio",
-                                      name: "hostType",
-                                      id: "typeRoom1",
-                                      value: "repo"
-                                    },
-                                    domProps: {
-                                      checked: _vm._q(_vm.hostType, "repo")
-                                    },
-                                    on: {
-                                      change: function($event) {
-                                        _vm.hostType = "repo"
-                                      }
+                                  _c("InfoEditor", {
+                                    model: {
+                                      value: _vm.sobre_casa,
+                                      callback: function($$v) {
+                                        _vm.sobre_casa = $$v
+                                      },
+                                      expression: "sobre_casa"
                                     }
-                                  }),
-                                  _vm._v(" "),
-                                  _c(
-                                    "label",
-                                    {
-                                      staticClass:
-                                        "f-title custom-control-label",
-                                      attrs: { for: "typeRoom1" }
-                                    },
-                                    [_vm._v("República")]
-                                  ),
-                                  _vm._v(" "),
-                                  _c(
-                                    "div",
-                                    { staticClass: "sb-c-l text-muted" },
-                                    [
-                                      _vm._v(
-                                        "\n                      Republicas são apartamento (geralmente uma casa) com dois ou mais quartos compartilháveis.\n                    "
-                                      )
-                                    ]
+                                  })
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "p",
+                                { staticClass: "text-muted pt-2 pl-1 pr-1" },
+                                [
+                                  _vm._v(
+                                    "Fale um pouco mais sobre o apartamento, seu histórico, sobre os antigos moradores e que o seu cliente pode encontrar. False sobre as dimensões, e tudo que for relevante."
                                   )
                                 ]
                               ),
@@ -72566,790 +73207,374 @@ var render = function() {
                               _c(
                                 "div",
                                 {
-                                  staticClass:
-                                    "sl-op m-2 mb-3 p-1 custom-control custom-radio"
+                                  staticClass: "col-12 mt-4 p-0",
+                                  staticStyle: { height: "70px" }
                                 },
                                 [
-                                  _c("input", {
-                                    directives: [
+                                  _c("div", { staticClass: "float-md-right" }, [
+                                    _c(
+                                      "div",
                                       {
-                                        name: "model",
-                                        rawName: "v-model",
-                                        value: _vm.hostType,
-                                        expression: "hostType"
-                                      }
-                                    ],
-                                    staticClass: "custom-control-input",
-                                    attrs: {
-                                      type: "radio",
-                                      name: "hostType",
-                                      id: "typeRoom2",
-                                      value: "condo"
-                                    },
-                                    domProps: {
-                                      checked: _vm._q(_vm.hostType, "condo")
-                                    },
-                                    on: {
-                                      change: function($event) {
-                                        _vm.hostType = "condo"
-                                      }
-                                    }
-                                  }),
-                                  _vm._v(" "),
-                                  _c(
-                                    "label",
-                                    {
-                                      staticClass:
-                                        "f-title custom-control-label",
-                                      attrs: { for: "typeRoom2" }
-                                    },
-                                    [_vm._v("Condómino (para estudantes)")]
-                                  ),
-                                  _vm._v(" "),
-                                  _c(
-                                    "div",
-                                    { staticClass: "sb-c-l text-muted" },
-                                    [
-                                      _vm._v(
-                                        "\n                      Uma rede de quartos construídos especificamente para hospedar estudantes.\n                    "
-                                      )
-                                    ]
-                                  )
-                                ]
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "div",
-                                {
-                                  staticClass:
-                                    "sl-op m-2 mb-3 p-1 custom-control custom-radio"
-                                },
-                                [
-                                  _c("input", {
-                                    directives: [
-                                      {
-                                        name: "model",
-                                        rawName: "v-model",
-                                        value: _vm.hostType,
-                                        expression: "hostType"
-                                      }
-                                    ],
-                                    staticClass: "custom-control-input",
-                                    attrs: {
-                                      type: "radio",
-                                      name: "hostType",
-                                      id: "typeRoom3",
-                                      value: "room"
-                                    },
-                                    domProps: {
-                                      checked: _vm._q(_vm.hostType, "room")
-                                    },
-                                    on: {
-                                      change: function($event) {
-                                        _vm.hostType = "room"
-                                      }
-                                    }
-                                  }),
-                                  _vm._v(" "),
-                                  _c(
-                                    "label",
-                                    {
-                                      staticClass:
-                                        "f-title text-muted custom-control-label",
-                                      attrs: { for: "typeRoom3" }
-                                    },
-                                    [_vm._v("Um Quarto (para estudantes)")]
-                                  ),
-                                  _vm._v(" "),
-                                  _c(
-                                    "div",
-                                    { staticClass: "sb-c-l text-muted" },
-                                    [
-                                      _vm._v(
-                                        "\n                      Estou recebendo hospedes para um quarto. (quarto fora da casa principal ou quarto privado).\n                    "
-                                      )
-                                    ]
-                                  )
-                                ]
-                              )
-                            ]
-                          ),
-                          _vm._v(" "),
-                          _vm.hostType
-                            ? _c("div", { attrs: { mode: "in-out" } }, [
-                                _c(
-                                  "div",
-                                  {
-                                    staticClass:
-                                      "mt-4 p-3 card border-0 ms-shadow",
-                                    attrs: { transation: "expand" }
-                                  },
-                                  [
-                                    _c("h4", { staticClass: "_text-bc " }, [
-                                      _vm._v("Condições do imóvel")
-                                    ]),
-                                    _vm._v(" "),
-                                    _c("p", { staticClass: "text-muted" }, [
-                                      _vm._v(
-                                        "Indique o tipo de casa na qual os estudantes serão hospedes (rever texto)."
-                                      )
-                                    ]),
+                                        staticClass: "btn btn-outline-primary",
+                                        on: {
+                                          click: function($event) {
+                                            _vm.toStep(2)
+                                          }
+                                        }
+                                      },
+                                      [_vm._v("Voltar")]
+                                    ),
                                     _vm._v(" "),
                                     _c(
                                       "div",
                                       {
-                                        staticClass:
-                                          "pt-3 border-top selection_from"
+                                        staticClass: "btn btn-primary",
+                                        on: {
+                                          click: function($event) {
+                                            _vm.toStep(4)
+                                          }
+                                        }
                                       },
-                                      [
-                                        _c("div", [
-                                          _vm._m(2),
-                                          _vm._v(" "),
-                                          _c(
-                                            "div",
-                                            {
-                                              staticClass:
-                                                "selection_options pl-4"
-                                            },
-                                            [
-                                              _c(
-                                                "div",
-                                                {
-                                                  staticClass:
-                                                    "sl-op m-2 mb-3 p-1 custom-control custom-radio"
-                                                },
-                                                [
-                                                  _c("input", {
-                                                    directives: [
-                                                      {
-                                                        name: "model",
-                                                        rawName: "v-model",
-                                                        value: _vm.typeContador,
-                                                        expression:
-                                                          "typeContador"
-                                                      }
-                                                    ],
-                                                    staticClass:
-                                                      "custom-control-input",
-                                                    attrs: {
-                                                      type: "radio",
-                                                      name: "typeContador",
-                                                      id: "typeContador1",
-                                                      value: "3003"
-                                                    },
-                                                    domProps: {
-                                                      checked: _vm._q(
-                                                        _vm.typeContador,
-                                                        "3003"
-                                                      )
-                                                    },
-                                                    on: {
-                                                      change: function($event) {
-                                                        _vm.typeContador =
-                                                          "3003"
-                                                      }
-                                                    }
-                                                  }),
-                                                  _vm._v(" "),
-                                                  _c(
-                                                    "label",
-                                                    {
-                                                      staticClass:
-                                                        "f-title custom-control-label",
-                                                      attrs: {
-                                                        for: "typeContador1"
-                                                      }
-                                                    },
-                                                    [
-                                                      _vm._v(
-                                                        "Contador Particular"
-                                                      )
-                                                    ]
-                                                  ),
-                                                  _vm._v(" "),
-                                                  _c(
-                                                    "div",
-                                                    {
-                                                      staticClass:
-                                                        "sb-c-l text-muted"
-                                                    },
-                                                    [
-                                                      _vm._v(
-                                                        "\n                              No contador particular, a gestão de compra e consumo de energia é com o hospede da casa.\n                            "
-                                                      )
-                                                    ]
-                                                  )
-                                                ]
-                                              ),
-                                              _vm._v(" "),
-                                              _c(
-                                                "div",
-                                                {
-                                                  staticClass:
-                                                    "sl-op m-2 mb-3 p-1 custom-control custom-radio"
-                                                },
-                                                [
-                                                  _c("input", {
-                                                    directives: [
-                                                      {
-                                                        name: "model",
-                                                        rawName: "v-model",
-                                                        value: _vm.typeContador,
-                                                        expression:
-                                                          "typeContador"
-                                                      }
-                                                    ],
-                                                    staticClass:
-                                                      "custom-control-input",
-                                                    attrs: {
-                                                      type: "radio",
-                                                      name: "typeContador",
-                                                      id: "typeContador2",
-                                                      value: "3030"
-                                                    },
-                                                    domProps: {
-                                                      checked: _vm._q(
-                                                        _vm.typeContador,
-                                                        "3030"
-                                                      )
-                                                    },
-                                                    on: {
-                                                      change: function($event) {
-                                                        _vm.typeContador =
-                                                          "3030"
-                                                      }
-                                                    }
-                                                  }),
-                                                  _vm._v(" "),
-                                                  _c(
-                                                    "label",
-                                                    {
-                                                      staticClass:
-                                                        "f-title custom-control-label",
-                                                      attrs: {
-                                                        for: "typeContador2"
-                                                      }
-                                                    },
-                                                    [
-                                                      _vm._v(
-                                                        "Contador Compartilhado"
-                                                      )
-                                                    ]
-                                                  ),
-                                                  _vm._v(" "),
-                                                  _c(
-                                                    "div",
-                                                    {
-                                                      staticClass:
-                                                        "sb-c-l text-muted"
-                                                    },
-                                                    [
-                                                      _vm._v(
-                                                        "\n                              O contador é único (ou do condomínio), e gestão do consumo é com os hospedes do condomínio.\n                            "
-                                                      )
-                                                    ]
-                                                  )
-                                                ]
-                                              )
-                                            ]
-                                          )
-                                        ]),
-                                        _vm._v(" "),
-                                        _c("div", [
-                                          _vm._m(3),
-                                          _vm._v(" "),
-                                          _c(
-                                            "div",
-                                            {
-                                              staticClass:
-                                                "selection_options pl-4",
-                                              staticStyle: {
-                                                "margin-top": "35px"
-                                              }
-                                            },
-                                            [
-                                              _c(
-                                                "div",
-                                                {
-                                                  staticClass:
-                                                    "sl-op m-2 mb-3 p-1 custom-control custom-radio"
-                                                },
-                                                [
-                                                  _c("input", {
-                                                    directives: [
-                                                      {
-                                                        name: "model",
-                                                        rawName: "v-model",
-                                                        value: _vm.hostAgua,
-                                                        expression: "hostAgua"
-                                                      }
-                                                    ],
-                                                    staticClass:
-                                                      "custom-control-input",
-                                                    attrs: {
-                                                      type: "radio",
-                                                      name: "hostAgua",
-                                                      id: "aguaOption1",
-                                                      value: "3187"
-                                                    },
-                                                    domProps: {
-                                                      checked: _vm._q(
-                                                        _vm.hostAgua,
-                                                        "3187"
-                                                      )
-                                                    },
-                                                    on: {
-                                                      change: function($event) {
-                                                        _vm.hostAgua = "3187"
-                                                      }
-                                                    }
-                                                  }),
-                                                  _vm._v(" "),
-                                                  _c(
-                                                    "label",
-                                                    {
-                                                      staticClass:
-                                                        "f-title custom-control-label",
-                                                      attrs: {
-                                                        for: "aguaOption1"
-                                                      }
-                                                    },
-                                                    [_vm._v("No quintal")]
-                                                  ),
-                                                  _vm._v(" "),
-                                                  _c(
-                                                    "div",
-                                                    {
-                                                      staticClass:
-                                                        "sb-c-l text-muted"
-                                                    },
-                                                    [
-                                                      _vm._v(
-                                                        "\n                              No quintal onde esta localizado o apartamento tem água canalizada.\n                            "
-                                                      )
-                                                    ]
-                                                  )
-                                                ]
-                                              ),
-                                              _vm._v(" "),
-                                              _c(
-                                                "div",
-                                                {
-                                                  staticClass:
-                                                    "sl-op m-2 mb-3 p-1 custom-control custom-radio"
-                                                },
-                                                [
-                                                  _c("input", {
-                                                    directives: [
-                                                      {
-                                                        name: "model",
-                                                        rawName: "v-model",
-                                                        value: _vm.hostAgua,
-                                                        expression: "hostAgua"
-                                                      }
-                                                    ],
-                                                    staticClass:
-                                                      "custom-control-input",
-                                                    attrs: {
-                                                      type: "radio",
-                                                      name: "hostAgua",
-                                                      id: "aguaOption2",
-                                                      value: "8798"
-                                                    },
-                                                    domProps: {
-                                                      checked: _vm._q(
-                                                        _vm.hostAgua,
-                                                        "8798"
-                                                      )
-                                                    },
-                                                    on: {
-                                                      change: function($event) {
-                                                        _vm.hostAgua = "8798"
-                                                      }
-                                                    }
-                                                  }),
-                                                  _vm._v(" "),
-                                                  _c(
-                                                    "label",
-                                                    {
-                                                      staticClass:
-                                                        "f-title custom-control-label",
-                                                      attrs: {
-                                                        for: "aguaOption2"
-                                                      }
-                                                    },
-                                                    [_vm._v("Fácil Acesso")]
-                                                  ),
-                                                  _vm._v(" "),
-                                                  _c(
-                                                    "div",
-                                                    {
-                                                      staticClass:
-                                                        "sb-c-l text-muted"
-                                                    },
-                                                    [
-                                                      _vm._v(
-                                                        "\n                              Não temos água canalizada mais é de fácil acesso no bairro.\n                            "
-                                                      )
-                                                    ]
-                                                  )
-                                                ]
-                                              )
-                                            ]
-                                          )
-                                        ])
-                                      ]
+                                      [_vm._v("Continuar")]
                                     )
-                                  ]
-                                ),
+                                  ])
+                                ]
+                              )
+                            ]
+                          )
+                        ])
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.step4
+                    ? _c("div", { staticClass: "step-4 fade show" }, [
+                        _c(
+                          "div",
+                          {
+                            staticClass: "m-4 col-md-6 p-3",
+                            staticStyle: { "max-width": "600px" }
+                          },
+                          [
+                            _c(
+                              "div",
+                              { staticClass: "card border-0 ms-shadow p-3" },
+                              [
+                                _c("h4", { staticClass: "_text-bc" }, [
+                                  _vm._v("Moveis disponíveis")
+                                ]),
+                                _vm._v(" "),
+                                _c("p", { staticClass: "text-muted" }, [
+                                  _vm._v(
+                                    "Selecione os Moveis básicos disponíveis para o estudante no apartamento."
+                                  )
+                                ]),
                                 _vm._v(" "),
                                 _c(
                                   "div",
                                   {
-                                    staticClass: "col-12 mt-4 p-0",
-                                    staticStyle: { height: "70px" }
+                                    staticClass: "border-top p-3",
+                                    staticStyle: { "min-height": "150px" }
                                   },
-                                  [
-                                    _c(
+                                  _vm._l(_vm.universidades, function(
+                                    universidade
+                                  ) {
+                                    return _c(
                                       "div",
-                                      { staticClass: "float-md-right" },
+                                      {
+                                        key: universidade.id,
+                                        staticClass: "row m-0"
+                                      },
                                       [
                                         _c(
                                           "div",
                                           {
                                             staticClass:
-                                              "btn btn-outline-primary",
-                                            on: {
-                                              click: function($event) {
-                                                _vm.toStep(1)
-                                              }
-                                            }
+                                              "custom-control custom-radio sel-opt mt-2"
                                           },
-                                          [_vm._v("Voltar")]
-                                        ),
-                                        _vm._v(" "),
-                                        _c(
-                                          "div",
-                                          {
-                                            staticClass: "btn btn-primary",
-                                            on: {
-                                              click: function($event) {
-                                                _vm.toStep(3)
+                                          [
+                                            _c("input", {
+                                              staticClass:
+                                                "custom-control-input",
+                                              attrs: {
+                                                type: "checkbox",
+                                                id: universidade.id
+                                              },
+                                              domProps: {
+                                                value: universidade.id
                                               }
-                                            }
-                                          },
-                                          [_vm._v("Continuar")]
+                                            }),
+                                            _vm._v(" "),
+                                            _c(
+                                              "label",
+                                              {
+                                                staticClass:
+                                                  "custom-control-label",
+                                                attrs: { for: universidade.id }
+                                              },
+                                              [
+                                                _vm._v(
+                                                  _vm._s(universidade.nome)
+                                                )
+                                              ]
+                                            )
+                                          ]
                                         )
                                       ]
                                     )
-                                  ]
-                                )
-                              ])
-                            : _vm._e()
-                        ]
-                      )
-                    ])
-                  : _vm._e(),
-                _vm._v(" "),
-                _vm.step3
-                  ? _c("div", { staticClass: "step-3" }, [
-                      _c(
-                        "div",
-                        {
-                          staticClass: "m-4 col-md-6 p-3",
-                          staticStyle: { "max-width": "500px" }
-                        },
-                        [
-                          _vm._m(4),
-                          _vm._v(" "),
-                          _c(
-                            "div",
-                            { staticClass: "mt-4 border-top selection_from" },
-                            [
-                              _c("div", { staticClass: "mt-3" }, [
-                                _c(
-                                  "div",
-                                  {
-                                    staticClass: "f-title",
-                                    staticStyle: {
-                                      "font-weight": "500",
-                                      "text-transform": "upercase"
-                                    }
-                                  },
-                                  [_vm._v("Nome do Apartamento")]
-                                ),
-                                _vm._v(" "),
-                                _c(
-                                  "p",
-                                  { staticClass: "text-muted pb-1 m-0" },
-                                  [
-                                    _vm._v(
-                                      "Indique o tipo de casa na qual os estudantes serão hospedes."
-                                    )
-                                  ]
-                                ),
-                                _vm._v(" "),
-                                _c("input", {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.hostNome,
-                                      expression: "hostNome"
-                                    }
-                                  ],
-                                  staticClass: "border-0 d-block w-100",
-                                  attrs: {
-                                    type: "text",
-                                    name: "hostNome",
-                                    id: "inp-n-home",
-                                    placeholder: "Nome do Apartamento"
-                                  },
-                                  domProps: { value: _vm.hostNome },
-                                  on: {
-                                    input: function($event) {
-                                      if ($event.target.composing) {
-                                        return
-                                      }
-                                      _vm.hostNome = $event.target.value
-                                    }
-                                  }
-                                })
-                              ]),
-                              _vm._v(" "),
-                              _c("div", { staticClass: "mt-3" }, [
-                                _c(
-                                  "div",
-                                  {
-                                    staticClass: "f-title mb-2",
-                                    staticStyle: {
-                                      "font-weight": "500",
-                                      "text-transform": "upercase"
-                                    }
-                                  },
-                                  [
-                                    _vm._v("Apresentação do Apartamento "),
-                                    _c("em", [
-                                      _vm._v(
-                                        "(" +
-                                          _vm._s(_vm.nota_Desc.length) +
-                                          "  up to a " +
-                                          _vm._s(_vm.text_maxlength) +
-                                          " characters)"
-                                      )
-                                    ])
-                                  ]
-                                ),
-                                _vm._v(" "),
-                                _c("textarea", {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.nota_Desc,
-                                      expression: "nota_Desc"
-                                    }
-                                  ],
-                                  staticClass: "border-0 w-100",
-                                  attrs: {
-                                    id: "textarea-home",
-                                    maxlength: _vm.text_maxlength,
-                                    placeholder: "Digite..."
-                                  },
-                                  domProps: { value: _vm.nota_Desc },
-                                  on: {
-                                    input: function($event) {
-                                      if ($event.target.composing) {
-                                        return
-                                      }
-                                      _vm.nota_Desc = $event.target.value
-                                    }
-                                  }
-                                }),
-                                _vm._v(" "),
-                                _c(
-                                  "p",
-                                  {
-                                    staticClass:
-                                      "text-muted pt-2 pl-1 pr-1 border-top"
-                                  },
-                                  [
-                                    _vm._v(
-                                      "Apresentação resumida da casa é primeira informação que os usuários vão poder ver quando pesquisarem sobre casas. Dica: seja objetivo. (Localização, Dimensões, Tipo de apartamento)."
-                                    )
-                                  ]
-                                )
-                              ])
-                            ]
-                          )
-                        ]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "row ml-5 mr-5 mt-2" }, [
-                        _c(
-                          "div",
-                          {
-                            staticClass: "pt-3 border-top",
-                            staticStyle: { "max-width": "740px" }
-                          },
-                          [
-                            _vm._m(5),
-                            _vm._v(" "),
-                            _c(
-                              "div",
-                              { staticClass: "mt-2" },
-                              [
-                                _c("InfoEditor", {
-                                  model: {
-                                    value: _vm.sobre_casa,
-                                    callback: function($$v) {
-                                      _vm.sobre_casa = $$v
-                                    },
-                                    expression: "sobre_casa"
-                                  }
-                                })
-                              ],
-                              1
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "p",
-                              { staticClass: "text-muted pt-2 pl-1 pr-1" },
-                              [
-                                _vm._v(
-                                  "Fale um pouco mais sobre o apartamento, seu histórico, sobre os antigos moradores e que o seu cliente pode encontrar. False sobre as dimensões, e tudo que for relevante."
+                                  }),
+                                  0
                                 )
                               ]
                             ),
                             _vm._v(" "),
-                            _c(
-                              "div",
-                              {
-                                staticClass: "col-12 mt-4 p-0",
-                                staticStyle: { height: "70px" }
-                              },
-                              [
-                                _c("div", { staticClass: "float-md-right" }, [
-                                  _c(
-                                    "div",
-                                    {
-                                      staticClass: "btn btn-outline-primary",
-                                      on: {
-                                        click: function($event) {
-                                          _vm.toStep(2)
-                                        }
-                                      }
-                                    },
-                                    [_vm._v("Voltar")]
-                                  ),
+                            _c("div", { staticClass: "col-12 p-0 m-0 mt-4" }, [
+                              _c(
+                                "div",
+                                {
+                                  staticClass:
+                                    "card ms-shadow p-5 border-0 mb-4"
+                                },
+                                [
+                                  _vm._m(6),
                                   _vm._v(" "),
                                   _c(
                                     "div",
-                                    {
-                                      staticClass: "btn btn-primary",
-                                      on: {
-                                        click: function($event) {
-                                          _vm.toStep(4)
-                                        }
-                                      }
-                                    },
-                                    [_vm._v("Continuar")]
+                                    { staticClass: "bt-upload m-auto" },
+                                    [
+                                      _c(
+                                        "button",
+                                        {
+                                          staticClass: "file btn btn-secondary"
+                                        },
+                                        [
+                                          _c("input", {
+                                            staticClass: "p-1",
+                                            staticStyle: {
+                                              position: "absolute",
+                                              opacity: "0",
+                                              "margin-left": "-11.5px",
+                                              "margin-top": "-7px",
+                                              "max-width": "150px"
+                                            },
+                                            attrs: {
+                                              type: "file",
+                                              name: "fotos_home",
+                                              multiple: "",
+                                              accept: "image/*"
+                                            },
+                                            on: { change: _vm.fotokaya }
+                                          }),
+                                          _vm._v(
+                                            "\n                        Selecione as fotos\n                      "
+                                          )
+                                        ]
+                                      )
+                                    ]
                                   )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c("div", { staticClass: "row" }, [
+                                _c("div", { staticClass: "col-12" }, [
+                                  _vm.fotos_Kaya[0]
+                                    ? _c(
+                                        "div",
+                                        {
+                                          staticClass:
+                                            "card border-0 p-3 ms-shadow"
+                                        },
+                                        _vm._l(_vm.fotos_Kaya, function(foto) {
+                                          return _c(
+                                            "div",
+                                            {
+                                              key: foto.file_name,
+                                              staticClass:
+                                                "flex-row alert-dismissible pb-2 pt-2 border-bottom pos-relative",
+                                              staticStyle: {
+                                                "padding-right":
+                                                  "45px !important"
+                                              }
+                                            },
+                                            [
+                                              _c(
+                                                "div",
+                                                {
+                                                  staticClass:
+                                                    "rounded-circle border",
+                                                  staticStyle: {
+                                                    "min-width": "74px",
+                                                    "min-height": "74px"
+                                                  }
+                                                },
+                                                [
+                                                  _c("img", {
+                                                    staticClass:
+                                                      "rounded-circle",
+                                                    attrs: {
+                                                      src: foto.data_img_url,
+                                                      width: "74",
+                                                      height: "74",
+                                                      alt: "home-fotos"
+                                                    }
+                                                  })
+                                                ]
+                                              ),
+                                              _vm._v(" "),
+                                              _c(
+                                                "div",
+                                                { staticClass: "ml-3" },
+                                                [
+                                                  _c(
+                                                    "div",
+                                                    { staticClass: "_text-bc" },
+                                                    [
+                                                      _c("strong", [
+                                                        _vm._v(
+                                                          _vm._s(foto.file_name)
+                                                        )
+                                                      ])
+                                                    ]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _vm.fotos_Kaya[0]
+                                                    .file_name ===
+                                                  foto.file_name
+                                                    ? _c(
+                                                        "div",
+                                                        {
+                                                          staticClass:
+                                                            "mt-2 fade show"
+                                                        },
+                                                        [
+                                                          _c(
+                                                            "span",
+                                                            {
+                                                              staticClass:
+                                                                "rounded-text-bt"
+                                                            },
+                                                            [
+                                                              _vm._v(
+                                                                "Foto Princiapl"
+                                                              )
+                                                            ]
+                                                          )
+                                                        ]
+                                                      )
+                                                    : _vm._e()
+                                                ]
+                                              ),
+                                              _vm._v(" "),
+                                              _c(
+                                                "button",
+                                                {
+                                                  staticClass: "close",
+                                                  attrs: {
+                                                    type: "button",
+                                                    "data-dismiss": "alert",
+                                                    "aria-label": "Close"
+                                                  },
+                                                  on: {
+                                                    click: function($event) {
+                                                      _vm.removeFoto(foto)
+                                                    }
+                                                  }
+                                                },
+                                                [
+                                                  _c(
+                                                    "span",
+                                                    {
+                                                      attrs: {
+                                                        "aria-hidden": "true"
+                                                      }
+                                                    },
+                                                    [_vm._v("×")]
+                                                  )
+                                                ]
+                                              )
+                                            ]
+                                          )
+                                        }),
+                                        0
+                                      )
+                                    : _vm._e()
                                 ])
-                              ]
-                            )
+                              ])
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "col-12 mb-4 mt-4 p-0" }, [
+                              _c("div", { staticClass: "float-md-right" }, [
+                                _c(
+                                  "div",
+                                  {
+                                    staticClass: "btn btn-outline-primary",
+                                    on: {
+                                      click: function($event) {
+                                        _vm.toStep(3)
+                                      }
+                                    }
+                                  },
+                                  [_vm._v("Voltar")]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "div",
+                                  {
+                                    staticClass: "btn btn-primary",
+                                    on: {
+                                      click: function($event) {
+                                        _vm.toStep(4)
+                                      }
+                                    }
+                                  },
+                                  [_vm._v("Continuar")]
+                                )
+                              ])
+                            ])
                           ]
                         )
                       ])
-                    ])
-                  : _vm._e(),
-                _vm._v(" "),
-                _vm.step4
-                  ? _c("div", { staticClass: "step-4" }, [
-                      _c(
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.errors.length
+                    ? _c(
                         "div",
                         {
-                          staticClass: "m-4 col-md-6 p-3",
+                          staticClass: "error",
                           staticStyle: { "max-width": "500px" }
                         },
                         [
-                          _vm._m(6),
-                          _vm._v(" "),
-                          _c("div"),
-                          _vm._v(" "),
-                          _c("div", { staticClass: "col-12 mb-4 mt-4 p-0" }, [
-                            _c("div", { staticClass: "float-md-right" }, [
-                              _c(
-                                "div",
-                                {
-                                  staticClass: "btn btn-outline-primary",
-                                  on: {
-                                    click: function($event) {
-                                      _vm.toStep(3)
-                                    }
-                                  }
-                                },
-                                [_vm._v("Voltar")]
+                          _c(
+                            "div",
+                            {
+                              staticClass:
+                                "alert alert-warning alert-dismissible fade show",
+                              attrs: { role: "alert" }
+                            },
+                            [
+                              _c("strong", [_vm._v("Error!")]),
+                              _vm._v(
+                                " Você deve verificar alguns desses campos abaixo.\n                "
                               ),
+                              _c("hr"),
                               _vm._v(" "),
                               _c(
-                                "div",
-                                {
-                                  staticClass: "btn btn-primary",
-                                  on: {
-                                    click: function($event) {
-                                      _vm.toStep(4)
-                                    }
-                                  }
-                                },
-                                [_vm._v("Continuar")]
-                              )
-                            ])
-                          ])
+                                "ul",
+                                _vm._l(_vm.errors, function(error) {
+                                  return _c("li", { key: error }, [
+                                    _vm._v(_vm._s(error))
+                                  ])
+                                }),
+                                0
+                              ),
+                              _vm._v(" "),
+                              _vm._m(7)
+                            ]
+                          )
                         ]
                       )
-                    ])
-                  : _vm._e(),
-                _vm._v(" "),
-                _vm.errors.length
-                  ? _c(
-                      "div",
-                      {
-                        staticClass: "error",
-                        staticStyle: { "max-width": "500px" }
-                      },
-                      [
-                        _c(
-                          "div",
-                          {
-                            staticClass:
-                              "alert alert-warning alert-dismissible fade show",
-                            attrs: { role: "alert" }
-                          },
-                          [
-                            _c("strong", [_vm._v("Error!")]),
-                            _vm._v(
-                              " Você deve verificar alguns desses campos abaixo.\n                "
-                            ),
-                            _c("hr"),
-                            _vm._v(" "),
-                            _c(
-                              "ul",
-                              _vm._l(_vm.errors, function(error) {
-                                return _c("li", { key: error }, [
-                                  _vm._v(_vm._s(error))
-                                ])
-                              }),
-                              0
-                            ),
-                            _vm._v(" "),
-                            _vm._m(7)
-                          ]
-                        )
-                      ]
-                    )
-                  : _vm._e()
-              ])
+                    : _vm._e()
+                ]
+              )
             ])
           ])
         ])
@@ -73377,7 +73602,7 @@ var staticRenderFns = [
           [
             _c("div", { staticClass: "mb-3" }, [
               _c(
-                "h3",
+                "h4",
                 {
                   staticClass: "_text-bc",
                   staticStyle: { "font-weight": "400" }
@@ -73392,15 +73617,10 @@ var staticRenderFns = [
           "div",
           {
             staticClass: "card-step p-3 rounded",
-            staticStyle: {
-              background: "#00bfff47",
-              border: "2px solid rgba(0, 123, 255, 0.37)"
-            }
+            staticStyle: { background: "#e7f5ff", color: "rgb(11, 48, 82)" }
           },
           [
-            _c("div", { staticStyle: { color: "#395a6b" } }, [
-              _c("strong", [_vm._v("Passo 1")])
-            ]),
+            _c("div", [_c("strong", [_vm._v("Passo 1")])]),
             _vm._v(" "),
             _c("p", { staticClass: "stype_content mb-0" }, [
               _vm._v(
@@ -73540,11 +73760,14 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card border-0 ms-shadow p-3" }, [
-      _c("h4", { staticClass: "_text-bc" }, [_vm._v("Tipo de apartamento")]),
+    return _c("div", { staticClass: "m-auto text-md-center" }, [
+      _c("h5", { staticClass: "_text-bc" }, [
+        _vm._v("Selecione apenas 5 fotos...")
+      ]),
       _vm._v(" "),
       _c("p", { staticClass: "text-muted" }, [
-        _vm._v("Indique o tipo de casa na qual os estudantes serão hospedes.")
+        _c("strong", [_vm._v("Nota:")]),
+        _c("em", [_vm._v(" A primeira será a foto de capa da sua casa.!")])
       ])
     ])
   },
@@ -113349,15 +113572,14 @@ __webpack_require__.r(__webpack_exports__);
 /*!**********************************************!*\
   !*** ./resources/js/components/NovaKaya.vue ***!
   \**********************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _NovaKaya_vue_vue_type_template_id_0da3bd95_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./NovaKaya.vue?vue&type=template&id=0da3bd95&scoped=true& */ "./resources/js/components/NovaKaya.vue?vue&type=template&id=0da3bd95&scoped=true&");
 /* harmony import */ var _NovaKaya_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./NovaKaya.vue?vue&type=script&lang=js& */ "./resources/js/components/NovaKaya.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _NovaKaya_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _NovaKaya_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var _NovaKaya_vue_vue_type_style_index_0_id_0da3bd95_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./NovaKaya.vue?vue&type=style&index=0&id=0da3bd95&scoped=true&lang=css& */ "./resources/js/components/NovaKaya.vue?vue&type=style&index=0&id=0da3bd95&scoped=true&lang=css&");
+/* empty/unused harmony star reexport *//* harmony import */ var _NovaKaya_vue_vue_type_style_index_0_id_0da3bd95_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./NovaKaya.vue?vue&type=style&index=0&id=0da3bd95&scoped=true&lang=css& */ "./resources/js/components/NovaKaya.vue?vue&type=style&index=0&id=0da3bd95&scoped=true&lang=css&");
 /* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
@@ -113389,7 +113611,7 @@ component.options.__file = "resources/js/components/NovaKaya.vue"
 /*!***********************************************************************!*\
   !*** ./resources/js/components/NovaKaya.vue?vue&type=script&lang=js& ***!
   \***********************************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -113533,15 +113755,14 @@ component.options.__file = "resources/js/components/Reserva.vue"
 /*!******************************************!*\
   !*** ./resources/js/components/Room.vue ***!
   \******************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Room_vue_vue_type_template_id_cd69db74___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Room.vue?vue&type=template&id=cd69db74& */ "./resources/js/components/Room.vue?vue&type=template&id=cd69db74&");
 /* harmony import */ var _Room_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Room.vue?vue&type=script&lang=js& */ "./resources/js/components/Room.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _Room_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _Room_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -113571,7 +113792,7 @@ component.options.__file = "resources/js/components/Room.vue"
 /*!*******************************************************************!*\
   !*** ./resources/js/components/Room.vue?vue&type=script&lang=js& ***!
   \*******************************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

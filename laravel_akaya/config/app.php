@@ -180,6 +180,9 @@ return [
         Krlove\EloquentModelGenerator\Provider\GeneratorServiceProvider::class,
         Laracademy\Generators\GeneratorsServiceProvider::class,
 
+        //
+        Laravel\Socialite\SocialiteServiceProvider::class,
+
     ],
 
     /*

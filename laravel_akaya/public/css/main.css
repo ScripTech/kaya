@@ -1400,3 +1400,54 @@ html {
 .flex-c-m > .btn {
     border-radius: 2rem;
 }
+
+
+/**
+* Login Layout
+**/
+
+
+@media screen and (min-width: 40em){
+  .main {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    background: url(/assets/svg_store/slash-single-3fd6496….svg);
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: auto 90%;
+  }
+}
+
+@media screen and (min-width: 40em){
+  .card-login {
+    padding: 24px;
+    background-color: #fff;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+  }
+}
+
+
+.card-login-container {
+    -webkit-transform: matrix(0.95, 0, 0, 0.95, 0, 80);
+    -ms-transform: matrix(0.95, 0, 0, 0.95, 0, 80);
+    transform: matrix(0.95, 0, 0, 0.95, 0, 80);
+    opacity: 0;
+    -webkit-transition: all 620ms cubic-bezier(0.26, 1.58, 0.7, 0.9);
+    transition: all 620ms cubic-bezier(0.26, 1.58, 0.7, 0.9);
+}

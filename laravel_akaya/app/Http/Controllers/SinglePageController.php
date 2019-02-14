@@ -8,6 +8,6 @@ class SinglePageController extends Controller
 {
     public function index()
     {
-        return view("app");
+        return view("spa");
     }
 }

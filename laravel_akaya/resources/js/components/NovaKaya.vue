@@ -5,13 +5,13 @@
 
           <div class="p-3" style="text-align: justify">
             <div class="mb-3">
-              <h3 class="_text-bc" style="font-weight: 400">Ola Edilson Mucanze!</h3>
+              <h4 class="_text-bc" style="font-weight: 400">Ola Edilson Mucanze!</h4>
             </div>
 
 
           </div>
-          <div class="card-step p-3 rounded" style=" background: #00bfff47; border:2px solid rgba(0, 123, 255, 0.37); ">
-            <div style="color: #395a6b;"><strong>Passo 1</strong></div>
+          <div class="card-step p-3 rounded" style=" background: #e7f5ff; color:rgb(11, 48, 82)">
+            <div><strong>Passo 1</strong></div>
             <p class="stype_content mb-0">Informacao basica do apartamento... Nome do apartamento, nota introdutoria e etc..</p>
           </div>
 
@@ -34,8 +34,8 @@
           <div class="row p-l-12 p-r-12">
             <!-- Multi step form -->
             <div class="col-md-12 m-auto">
-              <form action="#" >
-                <div v-if="step1" class="row m-0 step-1">
+              <form v-on:submit.prevent="onSubmitKaya" action="#" >
+                <div v-if="step1" class="row m-0 step-1 fade show">
                   <div class="m-4 col-md-6 p-3" style="max-width: 500px;">
                     <h4 class="_text-bc">Onde o seu apartamento esta localizado?</h4>
                       <p class="text-muted"> Para começar vamos indicar onde o seu apartamento esta localizado..</p>
@@ -90,7 +90,7 @@
                     </div>
                   </div>
                 </div>
-                <div v-if="step2" class="step-2 ">
+                <div v-if="step2" class="step-2 fade show">
                   <div class="m-4 col-md-6 p-3" style="max-width: 500px;">
                     <h4 class="_text-bc">Tipo de apartamento</h4>
                     <p class="text-muted">Indique o tipo de casa na qual os estudantes serão hospedes.</p>
@@ -181,7 +181,7 @@
                     </div>
                   </div>
                 </div>
-                <div v-if="step3" class="step-3">
+                <div v-if="step3" class="step-3 fade show">
                   <div class="m-4 col-md-6 p-3" style="max-width: 500px;">
                     <div class="card border-0 ms-shadow p-3">
                       <h4 class="_text-bc">Tipo de apartamento</h4>
@@ -218,15 +218,55 @@
                   </div>
 
                 </div>
-                <div v-if="step4" class="step-4">
-                  <div class="m-4 col-md-6 p-3" style="max-width: 500px;">
+                <div v-if="step4" class="step-4 fade show">
+                  <div class="m-4 col-md-6 p-3" style="max-width: 600px;">
                     <div class="card border-0 ms-shadow p-3">
-                      <h4 class="_text-bc">Tipo de apartamento</h4>
-                      <p class="text-muted">Indique o tipo de casa na qual os estudantes serão hospedes.</p>
+                      <h4 class="_text-bc">Moveis disponíveis</h4>
+                      <p class="text-muted">Selecione os Moveis básicos disponíveis para o estudante no apartamento.</p>
+
+                      <div class="border-top p-3" style="min-height:150px">
+                          <div class="row m-0" v-for="universidade in universidades" :key="universidade.id" >
+                            <div class="custom-control custom-radio sel-opt mt-2" >
+                              <input class="custom-control-input" type="checkbox" :id="universidade.id" :value="universidade.id">
+                              <label class="custom-control-label" :for="universidade.id">{{universidade.nome}}</label>
+                            </div>
+                          </div>
+                      </div>
                     </div>
 
-                    <div>
-
+                    <div class="col-12 p-0 m-0 mt-4">
+                      <div class="card ms-shadow p-5 border-0 mb-4">
+                        <div class="m-auto text-md-center">
+                          <h5 class="_text-bc">Selecione apenas 5 fotos...</h5>
+                          <p class="text-muted"><strong>Nota:</strong><em> A primeira será a foto de capa da sua casa.!</em></p>
+                        </div>
+                        <div class="bt-upload m-auto">
+                          <button class="file btn btn-secondary">
+                            <input class="p-1" type="file" name="fotos_home" @change="fotokaya" style="position:absolute; opacity:0; margin-left: -11.5px; margin-top:-7px; max-width:150px" multiple accept="image/*">
+                            Selecione as fotos
+                          </button>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-12">
+                          <div v-if="fotos_Kaya[0]" class="card border-0 p-3 ms-shadow" >
+                            <div v-for="foto in fotos_Kaya" :key="foto.file_name" class="flex-row alert-dismissible pb-2 pt-2 border-bottom pos-relative" style="padding-right:45px !important">
+                              <div class="rounded-circle border" style="min-width:74px; min-height:74px">
+                                 <img class="rounded-circle" :src="foto.data_img_url" width="74" height="74" alt="home-fotos">
+                              </div>
+                              <div class="ml-3">
+                                <div class="_text-bc"><strong>{{foto.file_name}}</strong> </div>
+                                <div class="mt-2 fade show" v-if="fotos_Kaya[0].file_name === foto.file_name">
+                                  <span class="rounded-text-bt">Foto Princiapl</span>
+                                </div>
+                              </div>
+                              <button v-on:click="removeFoto(foto)" type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
 
                     <div class="col-12 mb-4 mt-4 p-0">
@@ -371,7 +411,7 @@ export default {
           HeartIcon,
           CameraIcon
         },
-        props : ['const_nav', 'id'],
+        props : ['const_nav'],
         mounted() {
             console.log('NovaKaya Component mounted.'),
             this.loaded(),
@@ -390,10 +430,10 @@ export default {
         data() {
             return {
               // Variaveis
-              step1: true,
+              step1: false,
               step2: false,
               step3: false,
-              step4: false,
+              step4: true,
               text_maxlength: 140,
               provincia_id: null,
               distrito_id:null,
@@ -408,6 +448,8 @@ export default {
               hostNome: null,
               nota_Desc: '',
               sobre_casa:'',
+              // Fotos da casa
+              fotos_Kaya: [],
               // Error
               errors: [],
               //EndPoints
@@ -459,7 +501,7 @@ export default {
                   if (!this.hostAgua) {
                     this.errors.push("Acesso a Água required.");
                   }if(!this.errors.length){
-                    this.step1 = false;
+                    this.step1 = true;
                     this.step2 = false;
                     this.step3 = true;
                     this.step4 = false;
@@ -516,7 +558,53 @@ export default {
                 .catch(error =>{
                     console.log("------ Error on Load Universidades------")
                 })
-            }
+            },
+            // Uploader fotos
+            fotokaya(e){
+              let fotos = e.target.files
+              var num_fotos = fotos.length;
+
+              if(this.fotos_Kaya.length < 5){
+                if((num_fotos + this.fotos_Kaya.length) > 5 ){
+                  this.errors.push("Maximo 5 Fotos");
+                }else{
+                  if(num_fotos < 6){
+                    for (let i = 0; i < num_fotos; i++) {
+                    this.loadFotos(fotos[i]);
+                    }
+                  }else{
+                    this.errors.push("Maximo 5 Fotos");
+                  }
+                }
+              }else{
+                this.errors.push("Maximo 5 Fotos");
+              }
+            },
+            // Load Fotos
+            loadFotos(foto){
+              let reader = new FileReader();
+              reader.readAsDataURL(foto);
+              let fotoNameObj = new Object();
+                fotoNameObj.file_name = foto.name;
+
+              reader.onload = () =>{
+
+                var fotoObj = new Object();
+                    fotoObj = {
+                      file_name: foto.name,
+                      data_img_url : reader.result
+                    }
+                this.fotos_Kaya.push(fotoObj);
+              }
+            },
+            removeFoto: function(foto){
+              // Remove Foto
+              this.fotos_Kaya.splice(this.fotos_Kaya.indexOf(foto), 1);
+            },
+            // Sumit form
+            onSubmitKaya: function(e){
+              console.log(e)
+            },
         },
 
         computed:{
